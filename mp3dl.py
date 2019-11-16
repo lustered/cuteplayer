@@ -12,8 +12,8 @@ download_video = "youtube-dl "
 download_mp3 = "--extract-audio --audio-format mp3 "
 
 # TODO:
-#     add support to choose either download video or mp3
-#     add soundcloud support as well
+    # fix stupid stuff and exception handling 
+    # add pre-processing to youtube_video title
 
 def platform():
     url_inserted = entry.get()
@@ -62,10 +62,9 @@ def download_url():
             call(["%s %s" % (download_video, url_inserted)], shell = True)
         elif platform_validation[0] == 'youtube':
             if both_check.get():
+                call(["%s %s %s" % (download_video, download_mp3,url_inserted)], shell = True)
                 # download video
                 call(["%s %s" % (download_video, url_inserted)], shell = True)
-                # download mp3
-                call(["%s %s %s" % (download_video, download_mp3,url_inserted)], shell = True)
             elif mp3_check.get():
                 call(["%s %s %s" % (download_video, download_mp3,url_inserted)], shell = True)
             elif video_check.get():
