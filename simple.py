@@ -8,8 +8,17 @@ from pytube import YouTube as yt
 import validators as valid
 
 testing_url = "https://www.youtube.com/watch?v=-wv3ZUCy1Rg"
+download_dir = '~/Music/youtube-mp3'
+ext = "%(title)s."
+full_download = path.join(download_dir + '/', ext)
 
 def download_url():
+    try:
+        if path.isdir(download_dir): 
+            pass
+    except FileNotFoundError:
+        os.mkdir(download_dir)
+
     url_inserted = entry.get()
     isvalid_domain = False
     if valid.url(url_inserted) and 'youtube' in url_inserted:
@@ -32,7 +41,7 @@ def download_url():
             warningMessage.grid_forget()
             print('[[**** Video Downloading ****]]')
             call(["youtube-dl --extract-audio --audio-format mp3 \
-                 %s" % (url_inserted)], shell = True)
+                 -o '%s' %s" % (full_download,url_inserted)], shell = True)
             print("[Song: %s \tDownloaded" % (video.title))
     else:
         print('** Please enter a valid URL **')
@@ -44,6 +53,14 @@ def download_url():
 
 
 # main driver
+# if not os.path.exists(download_dir):
+#     call(['mkdir %s' % (download_dir)], shell = True)
+#     print('Directory created')
+# else:
+#     print('directory exists already')
+
+call(['mkdir %s' % (download_dir)], shell = True)
+
 window = Tk()
 
 # creating frame
