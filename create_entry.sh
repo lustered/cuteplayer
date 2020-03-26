@@ -4,12 +4,12 @@ dir=`pwd`
 if [[ "$u" == 'Linux' ]];  then
     echo  "[Desktop Entry]
 Version=1.0
-Name=simple-mp3-GUI
-Comment=cute simple GUI to download mp3 from YouTube
-Exec=python3 ${dir}/simple.py
+Name=cuteplayer
+Comment=cute simple GUI to download and play mp3
+Exec=python3 ${dir}/cuteplayer.py
 Icon=${dir}/cat.jpg
 Path=${dir}
 Terminal=false
-Type=Application" > simple-mp3.desktop
+Type=Application" > cuteplayer.desktop
 fi
 

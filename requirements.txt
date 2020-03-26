@@ -1,6 +1,7 @@
 # pip3 install -r requirements.txt 
 tk
-pytube
-validators
+fnmatch
+pygame
+mutagen
 youtube-dl
 
