@@ -1,9 +1,0 @@
-[Desktop Entry]
-Version=1.0
-Name=cuteplayer
-Comment=cute simple GUI to download and play mp3
-Exec=python3 /home/ouijan/Documents/git_projects/youtube-mp3-GUI/cuteplayer.py
-Icon=/home/ouijan/Documents/git_projects/youtube-mp3-GUI/cat.jpg
-Path=/home/ouijan/Documents/git_projects/youtube-mp3-GUI
-Terminal=false
-Type=Application
