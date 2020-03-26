@@ -7,9 +7,9 @@ Version=1.0
 Name=cuteplayer
 Comment=cute simple GUI to download and play mp3
 Exec=python3 ${dir}/cuteplayer.py
-Icon=${dir}/pics/cat.jpg
+Icon=${dir}/pics/cat.jpeg
 Path=${dir}
-Terminal=true
+Terminal=false
 Type=Application" > cuteplayer.desktop
 fi
 
