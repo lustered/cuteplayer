@@ -58,8 +58,6 @@ class Downloader(Frame):
         mixer.music.play()
     
 
-    # TODO:
-    #     update table when song is downloaded
     # displaying and updating table
     def songsTable(self):
         # list of songs in dir
