@@ -2,7 +2,7 @@
 
 # Simple tkinter GUI to download youtube/soundcloud videos in mp3 format using youtube-dl
 
-![GUI interface](https://github.com/lustered/youtube-mp3-GUI/tree/master/pics/gui.jpeg)
+![GUI interface](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/gui.jpeg)
 
 # Install requirements:
     pip3 install -r requirements.txt
