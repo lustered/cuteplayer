@@ -5,5 +5,8 @@
 ![GUI interface](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/gui.jpeg)
 
 # Install requirements:
+    #for linux 
     pip3 install -r requirements.txt
+    ./create_entry.sh
+    sudo cp cuteplayer.desktop /usr/share/applications
         
