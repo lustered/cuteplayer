@@ -4,7 +4,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.ttk import Treeview
 import os
-from subprocess import call,Popen
+from subprocess import Popen
 import fnmatch
 from time import sleep
 import pygame
@@ -13,7 +13,7 @@ import mutagen.mp3
 import random
 
 
-class Downloader(Frame):
+class Cuteplayer(Frame):
     delay = 2000
     path = ""+os.path.expanduser("~")+"/Music/cuteplayer/"
     mp3_songs = []
@@ -90,7 +90,7 @@ class Downloader(Frame):
             print(self.currentSong)
             mixer.music.load(self.currentSong)
             mixer.music.play()
-        except (FileNotFoundError):
+        except (FileNotFoundError,pygame.error):
             pass
     
 
@@ -195,6 +195,6 @@ class Downloader(Frame):
 
 if __name__ == '__main__':
     root = Tk()
-    app = Downloader(master = root)
+    app = Cuteplayer(master = root)
     app.mainloop()
 
