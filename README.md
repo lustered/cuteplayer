@@ -18,7 +18,7 @@
     mutagen has some issues: https://github.com/ritiek/spotify-downloader/issues/149
     although this won't affect the functionality much, aside from sometimes 
     crashing the shuffle option 
-#for ubuntu-based systems[optional]
+# for ubuntu-based systems[optional]
     sudo apt-get install ffmpeg:i386
     or
     sudo apt-get install libav-tools
