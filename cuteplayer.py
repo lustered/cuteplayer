@@ -25,6 +25,7 @@ class Downloader(Frame):
     print("default settings", 
             "\nsample rate: ",sample_rate,
             "\nsong dir:    ",path)
+
     def __init__(self,master=None):
         super().__init__(master)
         self.master = master 
@@ -37,6 +38,7 @@ class Downloader(Frame):
 
         self.playlist = random.sample(self.mp3_songs,len(self.mp3_songs))
         self.playlist = [''+self.path+song for song in self.playlist]
+
 
     def windowSettings(self,master):
         self.master.geometry("400x400")
@@ -91,6 +93,7 @@ class Downloader(Frame):
         except (FileNotFoundError):
             pass
     
+
     def update_sample_rate(self):
         try:
             # override sample rate for song
@@ -108,7 +111,6 @@ class Downloader(Frame):
         mixer.quit() # in case we change sample rate
         mixer.init(self.sample_rate)
         mixer.music.set_volume(.1)
-
 
 
     def shuffle_songs(self):
@@ -132,6 +134,7 @@ class Downloader(Frame):
         # repeat when song is over
         self.after(wait_time,self.shuffle_songs)
 
+
     # displaying and updating table
     def songsTable(self):
         # list of songs in dir
@@ -152,6 +155,7 @@ class Downloader(Frame):
 
         # selecting songs from table interaction 
         self.table.bind('<ButtonRelease-1>', self.selectedItem)
+
 
     def updateTable(self):
         self.table.delete(*self.table.get_children())
