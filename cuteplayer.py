@@ -115,7 +115,6 @@ class Downloader(Frame):
 
     def shuffle_songs(self):
         self.play_counter -= 1
-        print(self.play_counter)
         if abs(self.play_counter) <= len(self.playlist): 
             self.currentSong = self.playlist[self.play_counter]
             print(self.currentSong)
