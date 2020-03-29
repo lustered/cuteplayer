@@ -18,14 +18,25 @@ class Downloader(Frame):
     path = ""+os.path.expanduser("~")+"/Music/cuteplayer/"
     mp3_songs = []
     currentSong = None
+    sample_rate = 48000
+    current_song_length = 0
+    playlist = []
+    play_counter = 0
+    print("default settings", 
+            "\nsample rate: ",sample_rate,
+            "\nsong dir:    ",path)
     def __init__(self,master=None):
         super().__init__(master)
         self.master = master 
         self.windowSettings(master)
         self.mainMenu()
+        self.music_settings()
         self.songsTable()
         self.updateTable()
-        self.pack()
+        self.pack() 
+
+        self.playlist = random.sample(self.mp3_songs,len(self.mp3_songs))
+        self.playlist = [''+self.path+song for song in self.playlist]
 
     def windowSettings(self,master):
         self.master.geometry("400x400")
@@ -66,29 +77,60 @@ class Downloader(Frame):
         self.shuffleSongList.pack(side=BOTTOM,fill=BOTH)
 
 
-    def selectedItem(self,z):#idk what the 2nd arg is for
+    def selectedItem(self,x):#idk what the 2nd arg is for
+        self.play_counter = 0
         try:
             curItem = self.table.focus()
             # print(self.table.item(curItem)['text'])
             self.currentSong = self.path+self.table.item(curItem)['text'] + ".mp3"
-            print(self.currentSong)
-
+            self.update_sample_rate()
             # play song selected in treeview table
-            self.music_settings()
+            print(self.currentSong)
+            mixer.music.load(self.currentSong)
+            mixer.music.play()
         except (FileNotFoundError):
             pass
     
+    def update_sample_rate(self):
+        try:
+            # override sample rate for song
+            self.defined_sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate # sample rate of selected song
+        except(mutagen.MutagenError):
+            print("Mutagen being bad")
+        # set appropiate sample rate if the song selected has a different one
+        if self.defined_sample_rate != self.sample_rate:
+            print("new sample rate: ", self.defined_sample_rate)
+            self.sample_rate = self.defined_sample_rate
+            self.music_settings() # init with new sample rate
+
 
     def music_settings(self):
-        try:
-            mp3 = mutagen.mp3.MP3(self.currentSong)
-            mixer.init(frequency=mp3.info.sample_rate)
-            mixer.music.set_volume(.1)
-            mixer.music.load(self.currentSong)
-            mixer.music.play()
-        except (mutagen.MutagenError):
-            pass
+        mixer.quit() # in case we change sample rate
+        mixer.init(self.sample_rate)
+        mixer.music.set_volume(.1)
 
+
+
+    def shuffle_songs(self):
+        self.play_counter -= 1
+        print(self.play_counter)
+        if abs(self.play_counter) <= len(self.playlist): 
+            self.currentSong = self.playlist[self.play_counter]
+            print(self.currentSong)
+        try: 
+            # get current song's length
+            self.current_song_length = mutagen.mp3.MP3(self.currentSong).info.length
+        except(mutagen.MutagenError):
+            print("Mutagen is retarded")
+
+        self.update_sample_rate()
+        mixer.music.load(self.currentSong)
+        mixer.music.play()
+        
+        # length of the song to call function again to play the next song
+        wait_time = int(self.current_song_length * 1000) + 1
+        # repeat when song is over
+        self.after(wait_time,self.shuffle_songs)
 
     # displaying and updating table
     def songsTable(self):
@@ -105,46 +147,32 @@ class Downloader(Frame):
         # font style
         self.table.configure(style="BW.TLabel")
         self.table.heading("Format", text="Format")
-        self.table.heading("songNumber", text="#")
-        # self.table.pack(side=BOTTOM,fill=BOTH,expand=True,padx=10,pady=10,ipady=10)
+        self.table.heading("songNumber", text="#") 
         self.table.pack(side=BOTTOM,fill=BOTH,expand=True)
 
         # selecting songs from table interaction 
         self.table.bind('<ButtonRelease-1>', self.selectedItem)
 
-            
     def updateTable(self):
         self.table.delete(*self.table.get_children())
         pattern = "*.mp3"
         ls = os.listdir(self.path)
 
+        # list of mp3 songs in dir
         for entry in ls:
             if fnmatch.fnmatch(entry,pattern) and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
          
         self.mp3_songs.sort()
         # print(self.mp3_songs)
+        # add new song to table list
         for i,song in enumerate(self.mp3_songs):
             self.table.insert("",i,text="%s" % (song.strip(".mp3")),values=("mp3",i+1))
 
         self.after(self.delay,self.updateTable)
 
-
-    def shuffle_songs(self):
-        self.playlist = random.sample(self.mp3_songs,len(self.mp3_songs))
-        self.playlist = [''+self.path+song for song in self.playlist]
-        # mixer.music.load(self.playlist[-1])
-        # self.playlist.pop()
-        # mixer.music.play()
-        # mixer.music.queue(self.playlist[-1])
-        mixer.music.load(self.playlist.pop())
-        mixer.music.play()
-        mixer.music.queue(self.playlist.pop())
-        
-
     
     def download(self):
-        # print(self.path)
         try: 
             os.mkdir(self.path)
             print("download directory created")
@@ -154,8 +182,6 @@ class Downloader(Frame):
         if len(self.entry.get()) > 0:
             try:
                 print('[[**** Video Downloading ****]]')
-                # call(["youtube-dl -o '%s' --extract-audio --audio-format mp3 \
-                #          %s"  % (self.path+"%(title)s.%(ext)s",self.entry.get())], shell = True)
                 Popen(["'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
                          '%s'"  % (self.path+"%(title)s.%(ext)s",self.entry.get())],shell = True)
             except:
