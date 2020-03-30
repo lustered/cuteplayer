@@ -14,14 +14,21 @@ import random
 
 
 class Cuteplayer(Frame):
-    delay = 2000
     path = ""+os.path.expanduser("~")+"/Music/cuteplayer/"
+    try: 
+         os.mkdir(path)
+         print("download directory created")
+    except FileExistsError:
+         print("download directory already exists")
+
+    delay = 2000
     mp3_songs = []
     currentSong = None
     sample_rate = 48000
     current_song_length = 0
     playlist = []
     play_counter = 0
+
     print("default settings", 
             "\nsample rate: ",sample_rate,
             "\nsong dir:    ",path)
@@ -110,10 +117,11 @@ class Cuteplayer(Frame):
     def music_settings(self):
         mixer.quit() # in case we change sample rate
         mixer.init(self.sample_rate)
-        mixer.music.set_volume(.1)
+        mixer.music.set_volume(.6)
 
 
     def shuffle_songs(self):
+        # self.after_cancel(self.shuffle_songs)
         self.play_counter -= 1
         if abs(self.play_counter) <= len(self.playlist): 
             self.currentSong = self.playlist[self.play_counter]
@@ -122,7 +130,7 @@ class Cuteplayer(Frame):
             # get current song's length
             self.current_song_length = mutagen.mp3.MP3(self.currentSong).info.length
         except(mutagen.MutagenError):
-            print("Mutagen is retarded")
+            print("Mutagen bad")
 
         self.update_sample_rate()
         mixer.music.load(self.currentSong)
@@ -176,12 +184,6 @@ class Cuteplayer(Frame):
 
     
     def download(self):
-        try: 
-            os.mkdir(self.path)
-            print("download directory created")
-        except FileExistsError:
-            print("download directory already exists")
-
         if len(self.entry.get()) > 0:
             try:
                 print('[[**** Video Downloading ****]]')
