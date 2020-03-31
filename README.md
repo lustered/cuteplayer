@@ -29,4 +29,6 @@
     sometimes pygame.mixer.music will fail to load a song, but works if you click it again
     shuffle plays the next song before current song ends 
     shuffle stops playing songs
+    using shuffle more than once doesn't override song length repeat 
     won't open if a song has emojis, simlpy rename
+

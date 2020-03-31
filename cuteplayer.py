@@ -98,7 +98,9 @@ class Cuteplayer(Frame):
             mixer.music.load(self.currentSong)
             mixer.music.play()
         except (FileNotFoundError,pygame.error):
-            pass
+            mixer.music.load(self.currentSong)
+            mixer.music.play()
+            # pass
     
 
     def update_sample_rate(self):
@@ -117,7 +119,7 @@ class Cuteplayer(Frame):
     def music_settings(self):
         mixer.quit() # in case we change sample rate
         mixer.init(self.sample_rate)
-        mixer.music.set_volume(.6)
+        mixer.music.set_volume(.1)
 
 
     def shuffle_songs(self):
