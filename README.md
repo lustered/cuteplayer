@@ -14,7 +14,6 @@
     cp cuteplayer.py /usr/local/bin
     mv cuteplayer.py cuteplayer
 
-
 # for ubuntu-based systems[optional]
     sudo apt-get install ffmpeg:i386
     or

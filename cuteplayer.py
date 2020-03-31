@@ -12,7 +12,6 @@ from pygame import mixer
 import mutagen.mp3
 import random
 
-
 class Cuteplayer(Frame):
     path = ""+os.path.expanduser("~")+"/Music/cuteplayer/"
     try: 
@@ -21,7 +20,6 @@ class Cuteplayer(Frame):
     except FileExistsError:
          print("download directory already exists")
 
-    delay = 2000
     mp3_songs = []
     currentSong = None
     sample_rate = 48000
@@ -138,6 +136,7 @@ class Cuteplayer(Frame):
             for index, song in enumerate(self.playlist):
                 print("%s - Current Playlist: %s"%(index,song))
             print(self.currentSong)
+            self.update_sample_rate()
             self.currentSong = self.playlist.pop()
             mixer.music.load(self.currentSong)
             mixer.music.play(0)
@@ -179,12 +178,11 @@ class Cuteplayer(Frame):
                 self.mp3_songs.append(entry)
          
         self.mp3_songs.sort()
-        # print(self.mp3_songs)
         # add new song to table list
         for i,song in enumerate(self.mp3_songs):
             self.table.insert("",i,text="%s" % (song.strip(".mp3")),values=("mp3",i+1))
 
-        self.after(self.delay,self.updateTable)
+        self.after(2000,self.updateTable)
 
     
     def download(self):
@@ -203,4 +201,3 @@ if __name__ == '__main__':
     root = Tk()
     app = Cuteplayer(master = root)
     app.mainloop()
-
