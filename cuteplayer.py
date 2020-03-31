@@ -43,9 +43,6 @@ class Cuteplayer(Frame):
         self.updateTable()
         self.pack() 
 
-        self.playlist = random.sample(self.mp3_songs,len(self.mp3_songs))
-        self.playlist = [''+self.path+song for song in self.playlist]
-
 
     def windowSettings(self,master):
         self.master.geometry("400x400")
@@ -87,6 +84,7 @@ class Cuteplayer(Frame):
 
 
     def selectedItem(self,x):#idk what the 2nd arg is for
+        self.after_cancel(self.que_song)
         self.play_counter = 0
         try:
             curItem = self.table.focus()
@@ -94,9 +92,9 @@ class Cuteplayer(Frame):
             self.currentSong = self.path+self.table.item(curItem)['text'] + ".mp3"
             self.update_sample_rate()
             # play song selected in treeview table
-            print(self.currentSong)
             mixer.music.load(self.currentSong)
             mixer.music.play()
+            print(self.currentSong)
         except (FileNotFoundError,pygame.error):
             mixer.music.load(self.currentSong)
             mixer.music.play()
@@ -119,29 +117,33 @@ class Cuteplayer(Frame):
     def music_settings(self):
         mixer.quit() # in case we change sample rate
         mixer.init(self.sample_rate)
-        mixer.music.set_volume(.1)
+        mixer.music.set_volume(0.1)
 
 
     def shuffle_songs(self):
-        # self.after_cancel(self.shuffle_songs)
-        self.play_counter -= 1
-        if abs(self.play_counter) <= len(self.playlist): 
-            self.currentSong = self.playlist[self.play_counter]
-            print(self.currentSong)
-        try: 
-            # get current song's length
-            self.current_song_length = mutagen.mp3.MP3(self.currentSong).info.length
-        except(mutagen.MutagenError):
-            print("Mutagen bad")
+        self.playlist = random.sample(self.mp3_songs,len(self.mp3_songs))
+        self.playlist = [''+self.path+song for song in self.playlist]
 
-        self.update_sample_rate()
-        mixer.music.load(self.currentSong)
-        mixer.music.play()
-        
-        # length of the song to call function again to play the next song
-        wait_time = int(self.current_song_length * 1000) + 1
-        # repeat when song is over
-        self.after(wait_time,self.shuffle_songs)
+        if len(self.playlist) > 0:
+            self.currentSong = self.playlist.pop()
+            self.update_sample_rate()
+            mixer.music.load(self.currentSong)
+            mixer.music.play(0)
+        if len(self.playlist) > 0:
+            self.que_song()
+ 
+    def que_song(self):
+        pos = mixer.music.get_pos()
+        if int(pos) == -1:
+            for index, song in enumerate(self.playlist):
+                print("%s - Current Playlist: %s"%(index,song))
+            print(self.currentSong)
+            self.currentSong = self.playlist.pop()
+            mixer.music.load(self.currentSong)
+            mixer.music.play(0)
+
+        if len(self.playlist) > 0:
+            self.after(1000,self.que_song)
 
 
     # displaying and updating table

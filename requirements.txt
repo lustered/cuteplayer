@@ -2,4 +2,4 @@ tk
 pygame
 mutagen
 youtube-dl
-
+pyinstaller
