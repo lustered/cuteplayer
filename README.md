@@ -4,21 +4,16 @@
 ![GUI interface](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/gui.jpeg)
 
 # Install requirements:
-    #for linux 
-    pip3 install -r requirements.txt
-
-# Adding to global applications
-    ./create_entry.sh
-    sudo cp cuteplayer.desktop /usr/share/applications
+    * linux desktop entry
+        pip3 install -r requirements.txt
+        ./create_entry.sh
+        sudo cp cuteplayer.desktop /usr/share/applications
+    * or  executable in /dist
 
 # Adding to terminal path [might need root permission]
     cp cuteplayer.py /usr/local/bin
     mv cuteplayer.py cuteplayer
 
-# Disclaimer
-    mutagen has some issues: https://github.com/ritiek/spotify-downloader/issues/149
-    although this won't affect the functionality much, aside from sometimes 
-    crashing the shuffle option 
 
 # for ubuntu-based systems[optional]
     sudo apt-get install ffmpeg:i386
@@ -27,8 +22,9 @@
 
 # known issues:
     sometimes pygame.mixer.music will fail to load a song, but works if you click it again
-    shuffle plays the next song before current song ends 
-    shuffle stops playing songs
-    using shuffle more than once doesn't override song length repeat 
     won't open if a song has emojis, simlpy rename
+
+    * [mutagen has some issues: https://github.com/ritiek/spotify-downloader/issues/149
+    * although this won't affect the functionality much, aside from sometimes 
+    * crashing the shuffle option]
 
