@@ -4,11 +4,15 @@
 ![GUI interface](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/gui.jpeg)
 
 # Install requirements:
-    * linux desktop entry
+### linux desktop entry
         pip3 install -r requirements.txt
         ./create_entry.sh
         sudo cp cuteplayer.desktop /usr/share/applications
     * or  executable in /dist
+### MacOs
+    -make sure you have python > 3.7 from python.org
+    otherwise an older version of tkinter will be used
+    -dependencies are pain in the butt
 
 # Adding to terminal path [might need root permission]
     cp cuteplayer.py /usr/local/bin
@@ -18,6 +22,14 @@
     sudo apt-get install ffmpeg:i386
     or
     sudo apt-get install libav-tools
+
+![mini version](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/mini.jpeg)
+
+# log 
+    install the font ArcadeClassic to make it look like the pictures
+    build 
+    cuteplayer looks better
+    mini has a skip function 
 
 # known issues:
     * sometimes pygame.mixer.music will fail to load a song, but works if you click it again
