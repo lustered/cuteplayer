@@ -3,7 +3,6 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter.ttk import Treeview
-import os
 from subprocess import Popen
 import fnmatch
 from time import sleep
@@ -11,6 +10,7 @@ import pygame
 from pygame import mixer
 import mutagen.mp3
 import random
+import os
 
 class Cuteplayer(Frame):
     path = ""+os.path.expanduser("~")+"/Music/cuteplayer/"
@@ -43,14 +43,14 @@ class Cuteplayer(Frame):
 
 
     def windowSettings(self,master):
-        self.master.geometry("400x400")
+        self.master.geometry("300x400")
         self.master.title(" 김성경")
         self.master.configure(bg='pink')
 
 
     def mainMenu(self):
         # basic buttons
-        self.entry = Entry(self,fg='lavender',background='teal',font=('ArcadeClassic',15),width = 30)
+        self.entry = Entry(self,fg='lavender',background='teal',font=('ArcadeClassic',15),width = 20)
 
         self.quit = Button(self, text="quit", bg="pink",
                                 font=('ArcadeClassic',20),
@@ -71,15 +71,37 @@ class Cuteplayer(Frame):
         self.shuffleSongList = Button(self, text='shuffle',bg='lavender',
                                 font=('ArcadeClassic',15),
                                 command=self.shuffle_songs)
+
+        self.skip = Button(self, text='skip',bg='lavender',
+                                 font=('ArcadeClassic',15),
+                                 command=self.skip_song)
+
+
        
         # packing/grid
-        self.entry.pack(side=TOP, fill=BOTH, expand=True, padx=1, pady=1)
-        self.enter.pack(side=TOP, fill=BOTH, expand=True, padx=0, pady=0)
-        self.quit.pack(side=TOP, fill=BOTH, expand=True, padx=1, pady=1)
-        self.play.pack(side=BOTTOM,fill=X)
-        self.pause.pack(side=BOTTOM,fill=X)
-        self.shuffleSongList.pack(side=BOTTOM,fill=BOTH)
+        self.enter.grid(row=1,column=0,sticky=NSEW)
+        self.quit.grid(row=1,column=1,sticky=NSEW)
+        self.entry.grid(row=0,column=0,columnspan=3,sticky=W+E+N+S,padx=3,pady=3)
 
+        self.play.grid(row=2,column=0,sticky=NSEW)
+        self.pause.grid(row=2,column=1,sticky=NSEW)
+
+        self.skip.grid(row=5,column=0,sticky=NSEW)
+        self.shuffleSongList.grid(row=5,column=1,sticky=NSEW)
+
+    def skip_song(self):
+        if not self.currentSong:
+            return
+        self.playlist = [song for song in self.mp3_songs]
+        self.playlist = [''+self.path+song for song in self.playlist]
+
+        new_song = self.playlist.index(self.currentSong)
+        self.currentSong = self.playlist[new_song+1]
+
+        self.update_sample_rate()
+        mixer.music.load(self.currentSong)
+        mixer.music.play()
+        print("new song: ",self.currentSong.strip(self.path))
 
     def selectedItem(self,x):#idk what the 2nd arg is for
         self.after_cancel(self.que_song)
@@ -92,7 +114,7 @@ class Cuteplayer(Frame):
             # play song selected in treeview table
             mixer.music.load(self.currentSong)
             mixer.music.play()
-            print(self.currentSong)
+            print(self.currentSong.strip(self.path))
         except (FileNotFoundError,pygame.error):
             mixer.music.load(self.currentSong)
             mixer.music.play()
@@ -109,18 +131,20 @@ class Cuteplayer(Frame):
         if self.defined_sample_rate != self.sample_rate:
             print("new sample rate: ", self.defined_sample_rate)
             self.sample_rate = self.defined_sample_rate
-            self.music_settings() # init with new sample rate
+        self.music_settings() # init with new sample rate
 
 
     def music_settings(self):
         mixer.quit() # in case we change sample rate
         mixer.init(self.sample_rate)
-        mixer.music.set_volume(0.1)
+        mixer.music.set_volume(0.5)
 
 
     def shuffle_songs(self):
         self.playlist = random.sample(self.mp3_songs,len(self.mp3_songs))
         self.playlist = [''+self.path+song for song in self.playlist]
+        for index, song in enumerate(self.playlist):
+            print("%s - Current Playlist: %s"%(index,song.strip(self.path)))
 
         if len(self.playlist) > 0:
             self.currentSong = self.playlist.pop()
@@ -133,9 +157,7 @@ class Cuteplayer(Frame):
     def que_song(self):
         pos = mixer.music.get_pos()
         if int(pos) == -1:
-            for index, song in enumerate(self.playlist):
-                print("%s - Current Playlist: %s"%(index,song))
-            print(self.currentSong)
+            print(self.currentSong.strip(self.path))
             self.update_sample_rate()
             self.currentSong = self.playlist.pop()
             mixer.music.load(self.currentSong)
@@ -145,7 +167,7 @@ class Cuteplayer(Frame):
             self.after(1000,self.que_song)
 
 
-    # displaying and updating table
+    # creating object Treeview/table
     def songsTable(self):
         # list of songs in dir
         # styling for Treeview
@@ -153,18 +175,23 @@ class Cuteplayer(Frame):
         style.configure("BW.TLabel", foreground="black", background="pink",font=("ArcadeClassic",10))
 
         # table itself
+        # self.table = Treeview(self,columns=("Format","songNumber"))
         self.table = Treeview(self,columns=("songNumber"))
         # column labels
-        self.table.column("songNumber",width=1)
+        # self.table.column("Format")#width=20)
+        self.table.column("songNumber",width=10)
         # font style
         self.table.configure(style="BW.TLabel")
+        # self.table.heading("Format", text="Format")
         self.table.heading("songNumber", text="#") 
-        self.table.pack(side=BOTTOM,fill=BOTH,expand=True)
+
+        self.table.grid(row=3,column=0,rowspan=2,columnspan=3,sticky=W+E+N+S,padx=3,pady=3)
 
         # selecting songs from table interaction 
         self.table.bind('<ButtonRelease-1>', self.selectedItem)
 
 
+    # update table every 2 seconds
     def updateTable(self):
         self.table.delete(*self.table.get_children())
         pattern = "*.mp3"

@@ -20,8 +20,9 @@
     sudo apt-get install libav-tools
 
 # known issues:
-    sometimes pygame.mixer.music will fail to load a song, but works if you click it again
-    won't open if a song has emojis, simlpy rename
+    * sometimes pygame.mixer.music will fail to load a song, but works if you click it again
+    * won't open if a song has emojis, simlpy rename
+    * ignore pulseaudio/ALSA verbose: [ALSA lib pcm.c:8306:(snd_pcm_recover) underrun occurred]
 
     * [mutagen has some issues: https://github.com/ritiek/spotify-downloader/issues/149
     * although this won't affect the functionality much, aside from sometimes 
