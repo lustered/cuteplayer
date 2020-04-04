@@ -43,7 +43,7 @@ class Cuteplayer(Frame):
 
 
     def windowSettings(self,master):
-        self.master.geometry("400x400")
+        self.master.geometry("400x450")
         self.master.title(" 김성경")
         self.master.configure(bg='pink')
 

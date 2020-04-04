@@ -16,6 +16,7 @@
 
 # Adding to terminal path [might need root permission]
     cp cuteplayer.py /usr/local/bin
+    cd /usr/local/bin
     mv cuteplayer.py cuteplayer
 
 # for ubuntu-based systems[optional]
