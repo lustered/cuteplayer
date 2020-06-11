@@ -3,3 +3,4 @@ pygame
 mutagen
 youtube-dl
 pyinstaller
+pre-commit
