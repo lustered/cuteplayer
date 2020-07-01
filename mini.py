@@ -14,6 +14,9 @@ import os
 
 
 class Cuteplayer(Frame):
+    """The app itself"""
+
+    bg_color = "#e6d5ed"
     path = "" + os.path.expanduser("~") + "/Music/cuteplayer/"
     try:
         os.mkdir(path)
@@ -26,7 +29,6 @@ class Cuteplayer(Frame):
     sample_rate = 48000
     current_song_length = 0
     playlist = []
-    play_counter = 0
 
     print("default settings", "\nsample rate: ", sample_rate, "\nsong dir:    ", path)
 
@@ -41,25 +43,27 @@ class Cuteplayer(Frame):
         self.pack()
 
     def windowSettings(self, master):
+        """Set the main window settings"""
         self.master.geometry("300x400")
         self.master.title(" 김성경")
-        self.master.configure(bg="#333333")
+        self.master.configure(bg="#e6d5ed")
 
     def mainMenu(self):
         # basic buttons
         self.entry = Entry(
             self,
             fg="#333333",
-            background="#333333",
+            # background="#e6d5ed",
+            background="#c6aadf",
             font=("ArcadeClassic", 15),
             width=20,
-            highlightbackground="#333333",
+            highlightbackground="#e6d5ed",
         )
 
         self.quit = Button(
             self,
             text="quit",
-            bg="#333333",
+            bg="pink",
             font=("ArcadeClassic", 20),
             command=self.master.destroy,
         )
@@ -67,15 +71,15 @@ class Cuteplayer(Frame):
         self.enter = Button(
             self,
             text="download",
-            bg="#333333",
+            bg="pink",
             font=("ArcadeClassic", 20),
-            command=self.Download,
+            command=self.download,
         )
 
         self.play = Button(
             self,
             text="play",
-            bg="#333333",
+            bg="pink",
             font=("ArcadeClassic", 15),
             command=lambda: mixer.music.unpause(),
         )
@@ -83,7 +87,7 @@ class Cuteplayer(Frame):
         self.pause = Button(
             self,
             text="pause",
-            bg="#333333",
+            bg="pink",
             font=("ArcadeClassic", 15),
             command=lambda: mixer.music.pause(),
         )
@@ -91,7 +95,7 @@ class Cuteplayer(Frame):
         self.shuffleSongList = Button(
             self,
             text="shuffle",
-            bg="#333333",
+            bg="pink",
             font=("ArcadeClassic", 15),
             command=self.shuffle_songs,
         )
@@ -99,7 +103,7 @@ class Cuteplayer(Frame):
         self.skip = Button(
             self,
             text="skip",
-            bg="#333333",
+            bg="pink",
             font=("ArcadeClassic", 15),
             command=self.skip_song,
         )
@@ -118,35 +122,34 @@ class Cuteplayer(Frame):
         self.shuffleSongList.grid(row=5, column=1, sticky=NSEW)
 
     def skip_song(self):
+        """Play the next song in the playlist"""
         if not self.currentSong:
             return
-        self.playlist = [song for song in self.mp3_songs]
-        self.playlist = ["" + self.path + song for song in self.playlist]
 
-        new_song = self.playlist.index(self.currentSong)
-        self.currentSong = self.playlist[new_song + 1]
+        self.currentSong = self.playlist[self.playlist.index(self.currentSong) + 1]
 
         self.update_sample_rate()
         mixer.music.load(self.currentSong)
         mixer.music.play()
         print("new song: ", self.currentSong.strip(self.path))
 
-    def selectedItem(self, x):  # idk what the 2nd arg is for
+    def selectedItem(self, __x):  # idk what the 2nd arg is for
+        """Play a song when clicking on the table"""
         self.after_cancel(self.que_song)
-        self.play_counter = 0
         try:
             curItem = self.table.focus()
             # print(self.table.item(curItem)['text'])
             self.currentSong = self.path + self.table.item(curItem)["text"] + ".mp3"
+            self.playlist = ["" + self.path + song for song in self.mp3_songs]
             self.update_sample_rate()
             # play song selected in treeview table
             mixer.music.load(self.currentSong)
             mixer.music.play()
             print(self.currentSong.strip(self.path))
         except (FileNotFoundError, pygame.error):
+            sleep(0.05)
             mixer.music.load(self.currentSong)
             mixer.music.play()
-            # pass
 
     def update_sample_rate(self):
         try:
@@ -154,7 +157,7 @@ class Cuteplayer(Frame):
             self.defined_sample_rate = mutagen.mp3.MP3(
                 self.currentSong
             ).info.sample_rate  # sample rate of selected song
-        except (mutagen.MutagenError):
+        except mutagen.MutagenError:
             print("Mutagen being bad")
         # set appropiate sample rate if the song selected has a different one
         if self.defined_sample_rate != self.sample_rate:
@@ -163,46 +166,45 @@ class Cuteplayer(Frame):
         self.music_settings()  # init with new sample rate
 
     def music_settings(self):
+        """reset sample rate since it may vary from each song"""
         mixer.quit()  # in case we change sample rate
         mixer.init(self.sample_rate)
         mixer.music.set_volume(0.5)
 
     def shuffle_songs(self):
+        """Shuffle all current songs in the download directory and play them"""
         self.playlist = random.sample(self.mp3_songs, len(self.mp3_songs))
         self.playlist = ["" + self.path + song for song in self.playlist]
+        print("********** Current Playlist ********** ")
         for index, song in enumerate(self.playlist):
-            print("%s - Current Playlist: %s" % (index, song.strip(self.path)))
+            print("%s - : %s" % (index, song.strip(self.path)))
 
-        if len(self.playlist) > 0:
-            self.currentSong = self.playlist.pop()
+        if self.playlist:
+            # self.currentSong = self.playlist.pop()
+            self.currentSong = self.playlist[0]
             self.update_sample_rate()
             mixer.music.load(self.currentSong)
             mixer.music.play(0)
-        if len(self.playlist) > 0:
+            # if self.playlist:
             self.que_song()
 
     def que_song(self):
+        """Used by the shuffle_songs function to queu the next song in the list"""
         pos = mixer.music.get_pos()
-        if int(pos) == -1:
-            print(self.currentSong.strip(self.path))
-            self.update_sample_rate()
-            self.currentSong = self.playlist.pop()
-            mixer.music.load(self.currentSong)
-            mixer.music.play(0)
+        if int(pos) is -1:
+            self.skip_song()
 
-        if len(self.playlist) > 0:
-            self.after(1000, self.que_song)
-
-    # creating object Treeview/table
+        self.after(1000, self.que_song)
 
     def songsTable(self):
+        """Object Treeview/table"""
         # list of songs in dir
         # styling for Treeview
         style = ttk.Style()
         style.configure(
             "BW.TLabel",
             foreground="black",
-            background="#333333",
+            background="#e6d5ed",
             font=("ArcadeClassic", 10),
         )
 
@@ -231,17 +233,14 @@ class Cuteplayer(Frame):
         self.table.bind("<ButtonRelease-1>", self.selectedItem)
 
     # update table every 2 seconds
-
     def updateTable(self):
-        pass
-
-    def updateTable(self):
+        """Refresh the song table list"""
         self.table.delete(*self.table.get_children())
         pattern = "*.mp3"
-        ls = os.listdir(self.path)
+        _ls = os.listdir(self.path)
 
         # list of mp3 songs in dir
-        for entry in ls:
+        for entry in _ls:
             if fnmatch.fnmatch(entry, pattern) and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
 
@@ -252,8 +251,9 @@ class Cuteplayer(Frame):
 
         self.after(2000, self.updateTable)
 
-    def Download(self):
-        if len(self.entry.get()) > 0:
+    def download(self):
+        """Downloads the song/video to the home/user/music/cuteplayer directory"""
+        if self.entry.get():
             try:
                 print("[[**** Video Downloading ****]]")
                 Popen(
@@ -264,14 +264,13 @@ class Cuteplayer(Frame):
                     ],
                     shell=True,
                 )
-            except e:
+            except:
                 print("Error Downloading")
             print("[Song Downloaded]")
             self.entry.delete(0, "end")
 
 
 if __name__ == "__main__":
-    root = Tk()
-    root = Tk()
-    app = Cuteplayer(master=root)
-    app.mainloop()
+    ROOT = Tk()
+    APP = Cuteplayer(master=ROOT)
+    APP.mainloop()
