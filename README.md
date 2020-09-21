@@ -16,11 +16,18 @@ Simple tkinter GUI to download and play youtube/soundcloud files in mp3 format u
     otherwise an older version of tkinter will be used
     - Dependencies are pain in the butt
 
+    - ./install
+    - Install font
+
 ### For Ubuntu-based systems[optional]
 
     sudo apt-get install ffmpeg:i386
     or
     sudo apt-get install libav-tools
+
+## I do not own the font used, found here
+
+    https://www.dafont.com/arcade-classic-2.font
 
 # Known issues
 

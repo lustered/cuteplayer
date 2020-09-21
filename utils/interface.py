@@ -50,7 +50,7 @@ class Cuteplayer(Frame):
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("300x400")
+        self.master.geometry("300x410")
         self.master.title("김성경")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
@@ -62,7 +62,7 @@ class Cuteplayer(Frame):
             fg="#333333",
             # background="#e6d5ed",
             background="#c6aadf",
-            font=("ArcadeClassic", 15),
+            font=("ARCADECLASSIC", 15),
             width=20,
             highlightbackground="#e6d5ed",
         )
@@ -71,7 +71,7 @@ class Cuteplayer(Frame):
             self,
             text="quit",
             bg="pink",
-            font=("ArcadeClassic", 20),
+            font=("ARCADECLASSIC", 20),
             command=self.master.destroy,
         )
 
@@ -79,7 +79,7 @@ class Cuteplayer(Frame):
             self,
             text="download",
             bg="pink",
-            font=("ArcadeClassic", 20),
+            font=("ARCADECLASSIC", 20),
             command=self.download,
         )
 
@@ -87,7 +87,7 @@ class Cuteplayer(Frame):
             self,
             text="play",
             bg="pink",
-            font=("ArcadeClassic", 20),
+            font=("ARCADECLASSIC", 20),
             command=lambda: mixer.music.unpause(),
         )
 
@@ -95,7 +95,7 @@ class Cuteplayer(Frame):
             self,
             text="pause",
             bg="pink",
-            font=("ArcadeClassic", 20),
+            font=("ARCADECLASSIC", 20),
             command=lambda: mixer.music.pause(),
         )
 
@@ -103,7 +103,7 @@ class Cuteplayer(Frame):
             self,
             text="shuffle",
             bg="pink",
-            font=("ArcadeClassic", 20),
+            font=("ARCADECLASSIC", 20),
             command=self.shuffle_songs,
         )
 
@@ -111,7 +111,7 @@ class Cuteplayer(Frame):
             self,
             text="skip",
             bg="pink",
-            font=("ArcadeClassic", 20),
+            font=("ARCADECLASSIC", 20),
             command=self.skip_song,
         )
 
@@ -215,7 +215,7 @@ class Cuteplayer(Frame):
             "BW.TLabel",
             foreground="black",
             background="#e6d5ed",
-            font=("ArcadeClassic", 10),
+            font=("ARCADECLASSIC", 10),
         )
 
         # table itself
