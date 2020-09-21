@@ -1,5 +1,3 @@
-import pathlib
-from sys import platform
 import os
 import random
 import mutagen.mp3
@@ -21,9 +19,7 @@ class Cuteplayer(Frame):
     os.system("pip3 install --upgrade youtube-dl")
 
     # Path stuff
-    LINUX_PATH = "" + os.path.expanduser("~/Music") + "/cuteplayer/"
-    WIN_PATH = "" + os.path.expanduser("~/Music") + "\\cuteplayer\\"
-    path = WIN_PATH if "win32" in platform else LINUX_PATH
+    path = "" + os.path.expanduser("~/Music") + "/cuteplayer/"
 
     print("*"*90)
     if not os.path.exists(path):

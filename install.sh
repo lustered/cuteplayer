@@ -15,5 +15,6 @@ Terminal=false
 Type=Application" > cuteplayer.desktop
 
 mv cuteplayer.desktop ~/.local/share/applications/
+pyinstaller --onefile --icon=pics/cato.ico app.py
 fi
 

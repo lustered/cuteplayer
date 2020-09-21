@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# import PhotoImage
 from utils.interface import *
 
 if __name__ == "__main__":
