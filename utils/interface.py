@@ -21,8 +21,8 @@ class Cuteplayer(Frame):
     os.system("pip3 install --upgrade youtube-dl")
 
     # Path stuff
-    LINUX_PATH = "" + os.path.expanduser("~") + "/Music/cuteplayer/"
-    WIN_PATH = "" + os.path.expanduser("~") + "\\Music\\cuteplayer\\"
+    LINUX_PATH = "" + os.path.expanduser("~/Music") + "/cuteplayer/"
+    WIN_PATH = "" + os.path.expanduser("~/Music") + "\\cuteplayer\\"
     path = WIN_PATH if "win32" in platform else LINUX_PATH
 
     print("*"*90)
@@ -55,7 +55,7 @@ class Cuteplayer(Frame):
     def windowSettings(self, master):
         """Set the main window settings"""
         self.master.geometry("300x400")
-        self.master.title(" 김성경")
+        self.master.title("김성경")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
 
@@ -281,5 +281,6 @@ class Cuteplayer(Frame):
                 )
             except Exception:
                 print("Error Downloading")
+
             print("[Song Downloaded]")
             self.entry.delete(0, "end")
