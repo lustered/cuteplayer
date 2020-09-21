@@ -5,6 +5,7 @@
 
 # Install requirements:
 ### linux desktop entry
+        sudo apt-get install python3-tk
         pip3 install -r requirements.txt
         ./create_entry.sh
         sudo cp cuteplayer.desktop /usr/share/applications
