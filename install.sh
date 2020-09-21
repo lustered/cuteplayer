@@ -1,5 +1,5 @@
 #!/bin/bash
-pip3 install tk pygame mutagen youtube-dl
+pip3 install tk pygame mutagen youtube-dl pyinstaller
 
 u=`uname`
 dir=`pwd`

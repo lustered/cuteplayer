@@ -1,44 +1,32 @@
-## cuteplayer - simple GUI mp3 downloader/player
-###### Simple tkinter GUI to download and play youtube/soundcloud files in mp3 format using youtube-dl
+# Cuteplayer - simple GUI mp3 downloader/player
 
-![GUI interface](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/gui.jpeg)
+Simple tkinter GUI to download and play youtube/soundcloud files in mp3 format using youtube-dl
 
-# Install requirements:
-### linux desktop entry
-        sudo apt-get install python3-tk
-        pip3 install -r requirements.txt
-        ./create_entry.sh
-        sudo cp cuteplayer.desktop /usr/share/applications
-    * or  executable in /dist
-### MacOs
-    -make sure you have python > 3.7 from python.org
+![GUI interface](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/mini.jpeg)
+
+# Install
+
+## Linux
+
+    ./install.sh
+
+## MacOs
+
+    - Make sure you have python > 3.7 from python.org
     otherwise an older version of tkinter will be used
-    -dependencies are pain in the butt
+    - Dependencies are pain in the butt
 
-# Adding to terminal path [might need root permission]
-    cp cuteplayer.py /usr/local/bin
-    cd /usr/local/bin
-    mv cuteplayer.py cuteplayer
+### For Ubuntu-based systems[optional]
 
-# for ubuntu-based systems[optional]
     sudo apt-get install ffmpeg:i386
     or
     sudo apt-get install libav-tools
 
-![mini version](https://github.com/lustered/youtube-mp3-GUI/blob/master/pics/mini.jpeg)
+# Known issues
 
-# log 
-    install the font ArcadeClassic to make it look like the pictures
-    build 
-    cuteplayer looks better
-    mini has a skip function 
-
-# known issues:
     * sometimes pygame.mixer.music will fail to load a song, but works if you click it again
     * won't open if a song has emojis, simlpy rename
     * ignore pulseaudio/ALSA verbose: [ALSA lib pcm.c:8306:(snd_pcm_recover) underrun occurred]
-
     * [mutagen has some issues: https://github.com/ritiek/spotify-downloader/issues/149
-    * although this won't affect the functionality much, aside from sometimes 
+    * although this won't affect the functionality much, aside from sometimes
     * crashing the shuffle option]
-
