@@ -51,7 +51,7 @@ class Cuteplayer(Frame):
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("300x450")
+        self.master.geometry("300x440")
         self.master.title("김성경")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
@@ -113,16 +113,16 @@ class Cuteplayer(Frame):
             text="skip",
             bg="pink",
             font=("ARCADECLASSIC", 20),
-            command=self.skip_song,
+            command=self.skip_song
         )
 
         self.VolumeSlider = Scale(
             self, length=100, font="ARCADECLASSIC",
-            orient='horizontal', bg='pink',
-            command=self.VolAdjust)
+            orient='horizontal', bg='pink', showvalue=0,
+            command=self.VolAdjust, highlightthickness=10, highlightbackground=self.bg_color)
 
         # Set the default value to 50% volume
-        self.VolumeSlider.set(50)
+        self.VolumeSlider.set(self.vol)
 
         # packing/grid
         self.enter.grid(row=1, column=0, sticky=NSEW)
@@ -138,7 +138,7 @@ class Cuteplayer(Frame):
         self.shuffleSongList.grid(row=5, column=1, sticky=NSEW)
 
         self.VolumeSlider.grid(
-            row=6, column=0, columnspan=3, sticky=NSEW, pady=3)
+            row=6, column=0, columnspan=3, sticky=NSEW)
 
     def VolAdjust(self, vol):
         self.vol = int(vol) / 100
@@ -171,11 +171,12 @@ class Cuteplayer(Frame):
             mixer.music.load(self.currentSong)
             mixer.music.play()
             print(self.currentSong.strip(self.path))
-            # print(self.currentSong[len(self.path):])
         except (FileNotFoundError, pygame.error):
             sleep(0.05)
             mixer.music.load(self.currentSong)
             mixer.music.play()
+
+        self.que_song()
 
     def update_sample_rate(self):
         try:
@@ -251,8 +252,7 @@ class Cuteplayer(Frame):
             rowspan=2,
             columnspan=3,
             sticky=W + E + N + S,
-            padx=3,
-            pady=3,
+            ipady=3,
         )
 
         # selecting songs from table interaction
@@ -276,7 +276,7 @@ class Cuteplayer(Frame):
             self.table.insert("", i, text="%s" %
                               (song.strip(".mp3")), values=(i + 1))
             # self.table.insert("", i, text="%s" %
-            #                   song[:-3], values=(i + 1))
+            #                   song[:len(song)-3], values=(i + 1))
 
         self.after(2000, self.updateTable)
 
