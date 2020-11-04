@@ -9,7 +9,6 @@ select yn in "Yes" "No"; do
         [Nn]* ) exit;;
     esac
 done
-
 }
 
 function installFont {
@@ -47,6 +46,7 @@ function installLinuxEntry {
 }
 
 function installRequirements {
+    sudo apt-get install python3-dev python-dev
     pip3 install tk pygame mutagen youtube-dl pyinstaller
 }
 
