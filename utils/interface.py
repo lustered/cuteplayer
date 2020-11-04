@@ -29,6 +29,7 @@ class Cuteplayer(Frame):
 
     mp3_songs = []
     currentSong = None
+    vol = 50
     sample_rate = 48000
     current_song_length = 0
     playlist = []
@@ -50,7 +51,7 @@ class Cuteplayer(Frame):
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("300x410")
+        self.master.geometry("300x450")
         self.master.title("김성경")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
@@ -115,6 +116,14 @@ class Cuteplayer(Frame):
             command=self.skip_song,
         )
 
+        self.VolumeSlider = Scale(
+            self, length=100, font="ARCADECLASSIC",
+            orient='horizontal', bg='pink',
+            command=self.VolAdjust)
+
+        # Set the default value to 50% volume
+        self.VolumeSlider.set(50)
+
         # packing/grid
         self.enter.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
@@ -127,6 +136,13 @@ class Cuteplayer(Frame):
 
         self.skip.grid(row=5, column=0, sticky=NSEW)
         self.shuffleSongList.grid(row=5, column=1, sticky=NSEW)
+
+        self.VolumeSlider.grid(
+            row=6, column=0, columnspan=3, sticky=NSEW, pady=3)
+
+    def VolAdjust(self, vol):
+        self.vol = int(vol) / 100
+        mixer.music.set_volume(self.vol)
 
     def skip_song(self):
         """Play the next song in the playlist"""
@@ -179,7 +195,7 @@ class Cuteplayer(Frame):
         """reset sample rate since it may vary from each song"""
         mixer.quit()  # in case we change sample rate
         mixer.init(self.sample_rate)
-        mixer.music.set_volume(.5)
+        mixer.music.set_volume(self.vol)
 
     def shuffle_songs(self):
         """Shuffle all current songs in the download directory and play them"""
@@ -259,6 +275,8 @@ class Cuteplayer(Frame):
         for i, song in enumerate(self.mp3_songs):
             self.table.insert("", i, text="%s" %
                               (song.strip(".mp3")), values=(i + 1))
+            # self.table.insert("", i, text="%s" %
+            #                   song[:-3], values=(i + 1))
 
         self.after(2000, self.updateTable)
 
