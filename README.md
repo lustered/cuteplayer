@@ -10,7 +10,7 @@ Simple tkinter GUI to download and play youtube files in mp3 format using youtub
 
     ./install.sh
 
-## MacOs
+### MacOs
 
     - Make sure you have python > 3.7 from python.org
     otherwise an older version of tkinter will be used
@@ -24,6 +24,10 @@ Simple tkinter GUI to download and play youtube files in mp3 format using youtub
     sudo apt-get install ffmpeg:i386
     or
     sudo apt-get install libav-tools
+
+# Update every so often
+
+    ./update
 
 ## I do not own the font used, found here
 
