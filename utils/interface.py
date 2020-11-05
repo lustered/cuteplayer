@@ -119,7 +119,7 @@ class Cuteplayer(Frame):
         self.VolumeSlider = Scale(
             self, length=100, font="ARCADECLASSIC",
             orient='horizontal', bg='pink', showvalue=0,
-            command=self.VolAdjust, highlightthickness=10, highlightbackground=self.bg_color)
+            command=self.VolAdjust, highlightthickness=10, highlightbackground=self.bg_color, troughcolor='#c6aadf')
 
         # Set the default value to 50% volume
         self.VolumeSlider.set(self.vol)
