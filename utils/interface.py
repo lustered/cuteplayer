@@ -51,7 +51,7 @@ class Cuteplayer(Frame):
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("300x440")
+        self.master.geometry("300x470")
         self.master.title("Cuteplayer")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
@@ -124,6 +124,9 @@ class Cuteplayer(Frame):
         # Set the default value to 50% volume
         self.VolumeSlider.set(self.vol)
 
+        self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
+                             font=('ARCADECLASSIC', 10), wraplength=250)
+
         # packing/grid
         self.enter.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
@@ -138,7 +141,9 @@ class Cuteplayer(Frame):
         self.shuffleSongList.grid(row=5, column=1, sticky=NSEW)
 
         self.VolumeSlider.grid(
-            row=6, column=0, columnspan=3, sticky=NSEW)
+            row=7, column=0, columnspan=3, sticky=NSEW)
+
+        self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW, ipady=2)
 
     def VolAdjust(self, vol):
         self.vol = int(vol) / 100
@@ -156,6 +161,7 @@ class Cuteplayer(Frame):
         mixer.music.load(self.currentSong)
         mixer.music.play()
         print("new song: ", self.currentSong.strip(self.path))
+        self.CurSong.configure(text=self.currentSong[len(self.path):-4])
 
     def selectedItem(self, __x):  # idk what the 2nd arg is for
         """Play a song when clicking on the table"""
@@ -175,6 +181,9 @@ class Cuteplayer(Frame):
             sleep(0.05)
             mixer.music.load(self.currentSong)
             mixer.music.play()
+
+        self.CurSong.configure(
+            text=self.currentSong[len(self.path):-4])
 
         self.que_song()
 
@@ -212,6 +221,7 @@ class Cuteplayer(Frame):
             self.update_sample_rate()
             mixer.music.load(self.currentSong)
             mixer.music.play(0)
+            self.CurSong.configure(text=self.currentSong[len(self.path):-4])
             # if self.playlist:
             self.que_song()
 
