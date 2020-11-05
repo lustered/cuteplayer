@@ -46,8 +46,15 @@ function installLinuxEntry {
 }
 
 function installRequirements {
+
+pip3 install tk pygame mutagen youtube-dl pyinstaller
+
+if [[ "$u" == "Linux" ]] 
+then
     sudo apt-get install python3-dev python-dev
-    pip3 install tk pygame mutagen youtube-dl pyinstaller
+else
+    brew install python3-dev python-dev
+fi
 }
 
 # Do stuff
