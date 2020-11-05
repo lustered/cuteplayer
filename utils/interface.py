@@ -55,6 +55,7 @@ class Cuteplayer(Frame):
         self.master.title("Cuteplayer")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
+        self.master.grid_propagate(False)
 
     def mainMenu(self):
         # basic buttons
@@ -125,7 +126,7 @@ class Cuteplayer(Frame):
         self.VolumeSlider.set(self.vol)
 
         self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
-                             font=('ARCADECLASSIC', 10), wraplength=250)
+                             font=('ARCADECLASSIC', 10), wraplength=200, width=40)
 
         # packing/grid
         self.enter.grid(row=1, column=0, sticky=NSEW)
