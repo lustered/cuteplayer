@@ -29,7 +29,9 @@ fi
 }
 
 # Create desktop entry 
-function installLinuxEntry {
+function installEntry {
+if [[ "$u" == 'Linux' ]]; then
+    mv ARCADECLASSIC.TTF ~/.local/share/fonts/
     echo  "[Desktop Entry]
     Version=1.0
     Name=cuteplayer
@@ -43,6 +45,9 @@ function installLinuxEntry {
     # Move entry 
     mv cuteplayer.desktop ~/.local/share/applications/
     printf "\n\n[::Entry Created::]\n"
+else
+    cp cuteplayer.py cuteplayer.command
+fi
 }
 
 function installRequirements {
@@ -67,5 +72,5 @@ buildExecutable
 
 # For Linux systems
 if [[ "$u" == 'Linux' ]]; then
-    installLinuxEntry
+    installEntry
 fi
