@@ -51,7 +51,7 @@ class Cuteplayer(Frame):
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("300x470")
+        self.master.geometry("330x470")
         self.master.title("Cuteplayer")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
