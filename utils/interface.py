@@ -109,7 +109,7 @@ class Cuteplayer(Frame):
             text="shuffle",
             bg="pink",
             font=("ARCADECLASSIC", 20),
-            command=self.shuffle_songs,
+            command=self.shuffle_songs
         )
 
         self.skip = Button(
@@ -181,6 +181,7 @@ class Cuteplayer(Frame):
         mixer.music.play()
         print("new song: ", self.currentSong.strip(self.path))
         self.CurSong.configure(text=self.currentSong[len(self.path):-4])
+        self.crtime = 0
 
     def selectedItem(self, __x):  # idk what the 2nd arg is for
         """Play a song when clicking on the table"""
@@ -204,6 +205,7 @@ class Cuteplayer(Frame):
         self.CurSong.configure(
             text=self.currentSong[len(self.path):-4])
 
+        self.crtime = 0
         self.que_song()
 
     def update_sample_rate(self):
@@ -228,6 +230,7 @@ class Cuteplayer(Frame):
 
     def shuffle_songs(self):
         """Shuffle all current songs in the download directory and play them"""
+        self.crtime = 0
         self.playlist = random.sample(self.mp3_songs, len(self.mp3_songs))
         self.playlist = ["" + self.path + song for song in self.playlist]
         print("********** Current Playlist ********** ")
