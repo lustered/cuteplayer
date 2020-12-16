@@ -34,6 +34,8 @@ class Cuteplayer(Frame):
     current_song_length = 0
     playlist = []
     bg_color = "#e6d5ed"
+    id = None
+    crtime = 0
 
     print("default settings", "\nsample rate: ",
           sample_rate, "\nsong dir:    ", path)
@@ -47,12 +49,13 @@ class Cuteplayer(Frame):
         self.music_settings()
         self.songsTable()
         self.updateTable()
+        self.updateTimeline()
         self.pack()
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("300x470")
-        self.master.title("Cuteplayer")
+        self.master.geometry("330x510")
+        self.master.title("cuteplayer")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
         self.master.grid_propagate(False)
@@ -90,7 +93,7 @@ class Cuteplayer(Frame):
             text="play",
             bg="pink",
             font=("ARCADECLASSIC", 20),
-            command=lambda: mixer.music.unpause(),
+            command=lambda: [mixer.music.unpause(), self.updateTimeline()]
         )
 
         self.pause = Button(
@@ -98,7 +101,7 @@ class Cuteplayer(Frame):
             text="pause",
             bg="pink",
             font=("ARCADECLASSIC", 20),
-            command=lambda: mixer.music.pause(),
+            command=lambda: [mixer.music.pause(), self.after_cancel(self.id)],
         )
 
         self.shuffleSongList = Button(
@@ -118,15 +121,26 @@ class Cuteplayer(Frame):
         )
 
         self.VolumeSlider = Scale(
+            self, length=5, font="ARCADECLASSIC",
+            orient='horizontal', bg='pink', showvalue=0,
+            command=self.VolAdjust, highlightthickness=10,
+            highlightbackground=self.bg_color, troughcolor='#c6aadf')
+
+        self.timeline = Scale(
             self, length=100, font="ARCADECLASSIC",
             orient='horizontal', bg='pink', showvalue=0,
-            command=self.VolAdjust, highlightthickness=10, highlightbackground=self.bg_color, troughcolor='#c6aadf')
+            highlightthickness=10,
+            highlightbackground=self.bg_color, troughcolor='#c6aadf'
+        )
+
+        self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
 
         # Set the default value to 50% volume
         self.VolumeSlider.set(self.vol)
 
         self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
-                             font=('ARCADECLASSIC', 10), wraplength=200, width=40)
+                             font=('ARCADECLASSIC', 10), wraplength=200,
+                             width=40)
 
         # packing/grid
         self.enter.grid(row=1, column=0, sticky=NSEW)
@@ -142,13 +156,17 @@ class Cuteplayer(Frame):
         self.shuffleSongList.grid(row=5, column=1, sticky=NSEW)
 
         self.VolumeSlider.grid(
-            row=7, column=0, columnspan=3, sticky=NSEW)
+            row=8, column=0, columnspan=3, sticky=NSEW)
 
         self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW, ipady=2)
+
+        self.timeline.grid(
+            row=7, column=0, columnspan=3, sticky=NSEW)
 
     def VolAdjust(self, vol):
         self.vol = int(vol) / 100
         mixer.music.set_volume(self.vol)
+
 
     def skip_song(self):
         """Play the next song in the playlist"""
@@ -227,7 +245,8 @@ class Cuteplayer(Frame):
             self.que_song()
 
     def que_song(self):
-        """Used by the shuffle_songs function to queu the next song in the list"""
+        """ Used by the shuffle_songs function to queu the next song in the
+            list """
         pos = mixer.music.get_pos()
         if int(pos) is -1:
             self.skip_song()
@@ -269,6 +288,29 @@ class Cuteplayer(Frame):
         # selecting songs from table interaction
         self.table.bind("<ButtonRelease-1>", self.selectedItem)
 
+    def setTimeline(self, _time_event):
+        ''' Set the position of the song in a timeline slider '''
+        self.after_cancel(self.id)
+        self.crtime += (mixer.music.get_pos()/1000)
+        mixer.music.set_pos(self.timeline.get())
+        self.crtime += self.timeline.get() - self.crtime
+        self.updateTimeline()
+
+    def updateTimeline(self):
+        ''' Update the song slider '''
+        try:
+            song = mutagen.mp3.MP3(self.currentSong)
+            val = song.info.length
+            self.timeline.configure(to=val)
+            self.timeline.set(self.crtime)
+            self.crtime += 1
+        except Exception as e:
+            # print(e)
+            pass
+            
+        self.id = self.after(1000, self.updateTimeline)
+
+
     # update table every 2 seconds
     def updateTable(self):
         """Refresh the song table list"""
@@ -292,7 +334,8 @@ class Cuteplayer(Frame):
         self.after(2000, self.updateTable)
 
     def download(self):
-        """Downloads the song/video to the home/user/music/cuteplayer directory"""
+        """ Downloads the song/video to the home/user/music/cuteplayer
+           directory """
         if self.entry.get():
             try:
                 print("[[**** Video Downloading ****]]")
