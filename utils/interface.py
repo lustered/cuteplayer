@@ -10,6 +10,7 @@ from tkinter.ttk import Treeview
 from subprocess import Popen
 import fnmatch
 from time import sleep
+import threading
 
 
 class Cuteplayer(Frame):
@@ -48,10 +49,11 @@ class Cuteplayer(Frame):
         self.updateTable()
         self.updateTimeline()
         self.pack()
+        self.dthread = threading.Thread(target=self.download) # threaded dl
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("330x530")
+        self.master.geometry("330x560")
         self.master.title("cuteplayer")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
@@ -82,7 +84,7 @@ class Cuteplayer(Frame):
             text="download",
             bg="pink",
             font=("ARCADECLASSIC", 20),
-            command=self.download,
+            command=lambda: self.dthread.start(),
         )
 
         self.play = Button(
@@ -119,19 +121,18 @@ class Cuteplayer(Frame):
 
         self.VolumeSlider = Scale(
             self, length=5, font="ARCADECLASSIC",
-            orient='horizontal', bg='pink', showvalue=0,
+            orient='horizontal', bg=self.bg_color, showvalue=0,
             command=self.VolAdjust, highlightthickness=10,
             highlightbackground=self.bg_color, troughcolor='#c6aadf')
+        self.VolumeSlider.configure(label="%60s"%("volume"))
 
         self.timeline = Scale(
             self, length=100, font="ARCADECLASSIC",
-            orient='horizontal', bg='pink', showvalue=1,
-            highlightthickness=10,
-            highlightbackground=self.bg_color, troughcolor='#c6aadf'
-            # text='%120d'%(100)
-        )
+            orient='horizontal', bg=self.bg_color, showvalue=0,
+            highlightthickness=10, highlightbackground=self.bg_color, troughcolor='pink',
+            label=' ')
 
-        self.timeline.bind("Button-1", lambda: self.after_cancel(self.id))
+        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.id))
         self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
 
         # Set the default value to 50% volume
@@ -156,10 +157,10 @@ class Cuteplayer(Frame):
         self.VolumeSlider.grid(
             row=8, column=0, columnspan=3, sticky=NSEW)
 
-        self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW, ipady=2)
+        self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW)#, ipady=5)
 
-        self.timeline.grid(
-            row=7, column=0, columnspan=3, sticky=NSEW)
+
+        self.timeline.grid(row=7, column=0, columnspan=3, sticky=NSEW)
 
     def VolAdjust(self, vol):
         self.vol = int(vol) / 100
@@ -181,7 +182,7 @@ class Cuteplayer(Frame):
         self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
         self.crtime = 0
 
-    def selectedItem(self, __x):  # idk what the 2nd arg is for
+    def selectedItem(self, event):
         """Play a song when clicking on the table"""
         self.after_cancel(self.que_song)
         try:
@@ -195,7 +196,7 @@ class Cuteplayer(Frame):
             mixer.music.load(self.currentSong)
             mixer.music.play()
             print(self.currentSong.strip(self.path))
-        except (FileNotFoundError, pygame.error):
+        except (FileNotFoundError, Exception):
             sleep(1)
             mixer.music.load(self.currentSong)
             mixer.music.play()
@@ -220,6 +221,7 @@ class Cuteplayer(Frame):
         if self.sample_rate != sample_rate:
             print("new sample rate: ", sample_rate)
             self.sample_rate = sample_rate
+
         self.music_settings()  # init with new sample rate
 
     def music_settings(self):
@@ -240,7 +242,6 @@ class Cuteplayer(Frame):
             print("%s - : %s" % (index, song.strip(self.path)))
 
         if self.playlist:
-            # self.currentSong = self.playlist.pop()
             self.currentSong = self.playlist[0]
             self.update_sample_rate()
             mixer.music.load(self.currentSong)
@@ -250,9 +251,7 @@ class Cuteplayer(Frame):
             self.que_song()
 
     def que_song(self):
-        """ Used by the shuffle_songs function to queu the next song in the
-            list """
-
+        """ Used by the shuffle_songs function to queu the next song in the list """
         if int(mixer.music.get_pos()) == -1:
             self.skip_song()
 
@@ -260,7 +259,7 @@ class Cuteplayer(Frame):
 
     def songsTable(self):
         """ Object Treeview/table """
-        # list of songs in dir
+        # List of songs in dir
         # styling for Treeview
         style = ttk.Style()
         style.configure(
@@ -269,15 +268,14 @@ class Cuteplayer(Frame):
             background="#e6d5ed",
             font=("ARCADECLASSIC", 10),
         )
+        style.map('BW.TLabel', background=[('selected',"#c5a7d1")])
 
-        # table itself
         self.table = Treeview(self, columns=("songNumber"))
 
         # column labels
-        self.table.column("songNumber", width=10)
+        self.table.column("songNumber", width=-50)
         # font style
         self.table.configure(style="BW.TLabel")
-        # self.table.heading("Format", text="Format")
         self.table.heading("songNumber", text="#")
 
         self.table.grid(
@@ -289,25 +287,29 @@ class Cuteplayer(Frame):
             ipady=3,
         )
 
-        # selecting songs from table interaction
+        # selecting songs from table
         self.table.bind("<ButtonRelease-1>", self.selectedItem)
 
     def setTimeline(self, _time_event):
-        ''' Set the position of the song in a timeline slider '''
-        self.after_cancel(self.id)
-        self.crtime += (mixer.music.get_pos()/1000)
-        mixer.music.set_pos(self.timeline.get())
-        self.crtime += self.timeline.get() - self.crtime
-        self.updateTimeline()
+        """ Set the position of the song in a timeline slider """
+        if mixer.music.get_busy():
+            self.after_cancel(self.id)
+            self.crtime += (mixer.music.get_pos() / 1000)
+            mixer.music.set_pos(self.timeline.get())
+            self.crtime += self.timeline.get() - self.crtime
+            self.updateTimeline()
 
     def updateTimeline(self):
-        ''' Update the song slider '''
+        """ Update the song slider """
         try:
             song = mutagen.mp3.MP3(self.currentSong)
             val = song.info.length
             self.timeline.configure(to=val)
             self.timeline.set(self.crtime)
             self.crtime += 1
+
+            m,s = divmod(self.crtime, 60)
+            self.timeline.configure(label="%60s %1s: %2s"%(" ",int(m),int(s)))
         except Exception:
             pass
             
@@ -326,29 +328,22 @@ class Cuteplayer(Frame):
             if fnmatch.fnmatch(entry, pattern) and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
 
-        self.mp3_songs.sort()
         # add new song to table list
-        for i, song in enumerate(self.mp3_songs):
-            self.table.insert("", i, text="%s" %
-                              song[:len(song)-4], values=(i + 1))
-
-        self.after(2000, self.updateTable)
+        for i, song in enumerate(sorted(self.mp3_songs)):
+            self.table.insert("", i, text="%s" % song[:len(song)-4], values=(i + 1))
 
     def download(self):
-        """ Downloads the song/video to the home/user/music/cuteplayer
-           directory """
+        """ Downloads the song/video to the home/user/music/cuteplayer directory """
         if self.entry.get():
             try:
-                print("\t[ Video Downloading ]")
+                print("\n\t\t\t[ Video Downloading ]")
                 Popen(
-                    [
-                        "'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
-                         '%s'"
-                        % (self.path + "%(title)s.%(ext)s", self.entry.get())
-                    ],
-                    shell=True,
-                )
+                    [ "'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
+                         '%s'" % (self.path + "%(title)s.%(ext)s", self.entry.get())
+                    ], shell=True).wait()
+
                 self.entry.delete(0, "end")
+                self.updateTable()
 
             except Exception as e:
                 print("Error Downloading", e)
