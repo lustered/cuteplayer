@@ -13,8 +13,6 @@ from time import sleep
 
 
 class Cuteplayer(Frame):
-    """The app itself"""
-
     # update youtube-dl on start
     os.system("pip3 install --upgrade youtube-dl")
 
@@ -29,7 +27,7 @@ class Cuteplayer(Frame):
 
     mp3_songs = []
     currentSong = None
-    vol = 50
+    vol = 5
     sample_rate = 48000
     current_song_length = 0
     playlist = []
@@ -37,8 +35,7 @@ class Cuteplayer(Frame):
     id = None
     crtime = 0
 
-    print("default settings", "\nsample rate: ",
-          sample_rate, "\nsong dir:    ", path)
+    print("default settings", "\nsample rate: ", sample_rate, "\nsong dir: ", path)
     print("*"*90)
 
     def __init__(self, master=None):
@@ -54,7 +51,7 @@ class Cuteplayer(Frame):
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("330x510")
+        self.master.geometry("330x530")
         self.master.title("cuteplayer")
         self.master.configure(bg="#e6d5ed")
         self.master.resizable(False, False)
@@ -128,19 +125,20 @@ class Cuteplayer(Frame):
 
         self.timeline = Scale(
             self, length=100, font="ARCADECLASSIC",
-            orient='horizontal', bg='pink', showvalue=0,
+            orient='horizontal', bg='pink', showvalue=1,
             highlightthickness=10,
             highlightbackground=self.bg_color, troughcolor='#c6aadf'
+            # text='%120d'%(100)
         )
 
+        self.timeline.bind("Button-1", lambda: self.after_cancel(self.id))
         self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
 
         # Set the default value to 50% volume
         self.VolumeSlider.set(self.vol)
 
         self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
-                             font=('ARCADECLASSIC', 10), wraplength=200,
-                             width=40)
+                             font=('ARCADECLASSIC', 10), wraplength=250)
 
         # packing/grid
         self.enter.grid(row=1, column=0, sticky=NSEW)
@@ -180,7 +178,7 @@ class Cuteplayer(Frame):
         mixer.music.load(self.currentSong)
         mixer.music.play()
         print("new song: ", self.currentSong.strip(self.path))
-        self.CurSong.configure(text=self.currentSong[len(self.path):-4])
+        self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
         self.crtime = 0
 
     def selectedItem(self, __x):  # idk what the 2nd arg is for
@@ -198,12 +196,12 @@ class Cuteplayer(Frame):
             mixer.music.play()
             print(self.currentSong.strip(self.path))
         except (FileNotFoundError, pygame.error):
-            sleep(0.05)
+            sleep(1)
             mixer.music.load(self.currentSong)
             mixer.music.play()
 
-        self.CurSong.configure(
-            text=self.currentSong[len(self.path):-4])
+        # Only show up to 30 characters to avoid line wrap
+        self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
 
         self.crtime = 0
         self.que_song()
@@ -211,28 +209,32 @@ class Cuteplayer(Frame):
     def update_sample_rate(self):
         try:
             # override sample rate for song
-            self.sample_rate = mutagen.mp3.MP3(
-                self.currentSong
-            ).info.sample_rate  # sample rate of selected song
+            sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
         except mutagen.MutagenError:
-            print("Mutagen being bad")
+            pass
+            # print("Mutagen being bad")
+            # sleep(1)
+            # sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate  # retry
+
         # set appropiate sample rate if the song selected has a different one
-        if self.sample_rate != self.sample_rate:
-            print("new sample rate: ", self.sample_rate)
-            self.sample_rate = self.sample_rate
+        if self.sample_rate != sample_rate:
+            print("new sample rate: ", sample_rate)
+            self.sample_rate = sample_rate
         self.music_settings()  # init with new sample rate
 
     def music_settings(self):
-        """reset sample rate since it may vary from each song"""
-        mixer.quit()  # in case we change sample rate
+        """ Reset sample rate since it may vary from each song """
+        # In case we change sample rate
+        mixer.quit()  
         mixer.init(self.sample_rate)
         mixer.music.set_volume(self.vol)
 
     def shuffle_songs(self):
-        """Shuffle all current songs in the download directory and play them"""
+        """ Shuffle all current songs in the download directory and play them """
         self.crtime = 0
         self.playlist = random.sample(self.mp3_songs, len(self.mp3_songs))
         self.playlist = ["" + self.path + song for song in self.playlist]
+
         print("********** Current Playlist ********** ")
         for index, song in enumerate(self.playlist):
             print("%s - : %s" % (index, song.strip(self.path)))
@@ -243,21 +245,21 @@ class Cuteplayer(Frame):
             self.update_sample_rate()
             mixer.music.load(self.currentSong)
             mixer.music.play(0)
-            self.CurSong.configure(text=self.currentSong[len(self.path):-4])
+            self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
             # if self.playlist:
             self.que_song()
 
     def que_song(self):
         """ Used by the shuffle_songs function to queu the next song in the
             list """
-        pos = mixer.music.get_pos()
-        if int(pos) is -1:
+
+        if int(mixer.music.get_pos()) == -1:
             self.skip_song()
 
         self.after(1000, self.que_song)
 
     def songsTable(self):
-        """Object Treeview/table"""
+        """ Object Treeview/table """
         # list of songs in dir
         # styling for Treeview
         style = ttk.Style()
@@ -269,10 +271,9 @@ class Cuteplayer(Frame):
         )
 
         # table itself
-        # self.table = Treeview(self,columns=("Format","songNumber"))
         self.table = Treeview(self, columns=("songNumber"))
+
         # column labels
-        # self.table.column("Format")#width=20)
         self.table.column("songNumber", width=10)
         # font style
         self.table.configure(style="BW.TLabel")
@@ -307,8 +308,7 @@ class Cuteplayer(Frame):
             self.timeline.configure(to=val)
             self.timeline.set(self.crtime)
             self.crtime += 1
-        except Exception as e:
-            # print(e)
+        except Exception:
             pass
             
         self.id = self.after(1000, self.updateTimeline)
@@ -316,7 +316,7 @@ class Cuteplayer(Frame):
 
     # update table every 2 seconds
     def updateTable(self):
-        """Refresh the song table list"""
+        """ Refresh the song table list """
         self.table.delete(*self.table.get_children())
         pattern = "*.mp3"
         _ls = os.listdir(self.path)
@@ -330,9 +330,7 @@ class Cuteplayer(Frame):
         # add new song to table list
         for i, song in enumerate(self.mp3_songs):
             self.table.insert("", i, text="%s" %
-                              (song.strip(".mp3")), values=(i + 1))
-            # self.table.insert("", i, text="%s" %
-            #                   song[:len(song)-3], values=(i + 1))
+                              song[:len(song)-4], values=(i + 1))
 
         self.after(2000, self.updateTable)
 
@@ -341,7 +339,7 @@ class Cuteplayer(Frame):
            directory """
         if self.entry.get():
             try:
-                print("[[**** Video Downloading ****]]")
+                print("\t[ Video Downloading ]")
                 Popen(
                     [
                         "'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
@@ -350,8 +348,7 @@ class Cuteplayer(Frame):
                     ],
                     shell=True,
                 )
-            except Exception:
-                print("Error Downloading")
+                self.entry.delete(0, "end")
 
-            print("[Song Downloaded]")
-            self.entry.delete(0, "end")
+            except Exception as e:
+                print("Error Downloading", e)

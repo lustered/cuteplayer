@@ -9,19 +9,16 @@ Simple tkinter GUI to download and play youtube files in mp3 format using youtub
     .Control position of the song
     .Update slider as the song plays
 
-    
-
-
 # Install
 
     ./install.sh
 
 ### MacOs
 
-    - Make sure you have python > 3.7 from python.org
+    - Make sure you have python > 3.7 < 3.9 from python.org
     otherwise an older version of tkinter will be used
     - Tk is a pain in the butt
-    - Pygame can be a pain ^
+    - Pygame==1.9.6 can be a pain ^
     - youtube-dl env setup can be a pain
 
     - ./install

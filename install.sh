@@ -56,7 +56,7 @@ Type=Application" > cuteplayer.desktop
 
 function installRequirements {
 
-    pip3 install tk pygame mutagen youtube-dl pyinstaller
+    pip3 install tk pygame==1.9.6 mutagen youtube-dl pyinstaller
 
     if [[ "$u" == "Linux" ]] 
     then
