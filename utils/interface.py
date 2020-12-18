@@ -295,9 +295,17 @@ class Cuteplayer(Frame):
         if mixer.music.get_busy():
             self.after_cancel(self.id)
             self.crtime += (mixer.music.get_pos() / 1000)
-            mixer.music.set_pos(self.timeline.get())
+
+            # Check boundry since actual play time might be off and lock the frame.
+            # Usually happens when setting the slider to the end.
+            if self.timeline.get() <= mutagen.mp3.MP3(self.currentSong).info.length:
+                mixer.music.set_pos(self.timeline.get())
+            else:
+                mixer.music.set_pos(mutagen.mp3.MP3(self.currentSong).info.length - 1)
+
             self.crtime += self.timeline.get() - self.crtime
             self.updateTimeline()
+        return
 
     def updateTimeline(self):
         """ Update the song slider """
