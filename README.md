@@ -2,6 +2,8 @@
 
 Simple tkinter GUI to download and play youtube files in mp3 format using youtube-dl
 
+[![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/wTimeline.jpeg)]
+
 ## Timeline slider branch can:
 
     .Control position of the song
