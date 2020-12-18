@@ -2,7 +2,10 @@
 
 Simple tkinter GUI to download and play youtube files in mp3 format using youtube-dl
 
-![GUI interface](https://github.com/lustered/cuteplayer/blob/master/pics/master.jpeg)
+## Timeline slider branch can:
+
+    .Control position of the song
+    .Update slider as the song plays
 
 # Install
 
@@ -10,12 +13,10 @@ Simple tkinter GUI to download and play youtube files in mp3 format using youtub
 
 ### MacOs
 
-    - Make sure you have python > 3.7 from python.org
-    otherwise an older version of tkinter will be used
-    - Tk is a pain in the butt
-    - Pygame can be a pain ^
+    - Make sure you have python > 3.7 < 3.9 from python.org
+    - Tk is a pain
+    - Pygame==1.9.6 is a pain 
     - youtube-dl env setup can be a pain
-
     - ./install
 
 ### For Ubuntu-based systems[optional]
@@ -24,15 +25,11 @@ Simple tkinter GUI to download and play youtube files in mp3 format using youtub
     or
     sudo apt-get install libav-tools
 
-## I do not own the font used, found here
+## I do not own the font
 
     https://www.dafont.com/arcade-classic-2.font
 
-# Known issues
+# Branch known issues
 
-    * sometimes pygame.mixer.music will fail to load a song, but works if you click it again
-    * won't open if a song has emojis, simlpy rename
-    * ignore pulseaudio/ALSA verbose: [ALSA lib pcm.c:8306:(snd_pcm_recover) underrun occurred]
-    * [mutagen has some issues: https://github.com/ritiek/spotify-downloader/issues/149
-    * although this won't affect the functionality much, aside from sometimes
-    * crashing the shuffle option]
+    .Slider continues if the timeline is manually changed while the song is paused.
+    .If the slider is set all the way to the end the frame locks up
