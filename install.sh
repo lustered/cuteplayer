@@ -51,6 +51,7 @@ Type=Application" > cuteplayer.desktop
 
     else
         cp cuteplayer.py cuteplayer.command
+        chmod +x cuteplayer.command
     fi
 }
 
