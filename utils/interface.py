@@ -329,7 +329,8 @@ class Cuteplayer(Frame):
                 self.mp3_songs.append(entry)
 
         # add new song to table list
-        for i, song in enumerate(sorted(self.mp3_songs)):
+        self.mp3_songs.sort()
+        for i, song in enumerate(self.mp3_songs):
             self.table.insert("", i, text="%s" % song[:len(song)-4], values=(i + 1))
 
     def download(self):
