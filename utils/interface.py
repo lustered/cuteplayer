@@ -118,11 +118,11 @@ class Cuteplayer(Frame):
             command=self.skip_song
         )
 
-        self.VolumeSlider = Scale(
-            self, length=5, font="ARCADECLASSIC",
-            orient='horizontal', bg=self.bg_color, showvalue=0,
-            command=self.VolAdjust, highlightthickness=10,
-            highlightbackground=self.bg_color, troughcolor='#c6aadf')
+        self.VolumeSlider = Scale( self, length=5, font="ARCADECLASSIC",
+                                orient='horizontal', bg=self.bg_color, showvalue=0,
+                                command=self.VolAdjust, highlightthickness=10,
+                                highlightbackground=self.bg_color, troughcolor='#c6aadf')
+
         self.VolumeSlider.configure(label="%60s"%("volume"))
 
         self.timeline = Scale(
@@ -143,9 +143,8 @@ class Cuteplayer(Frame):
         # packing/grid
         self.dl.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
-        self.entry.grid(
-            row=0, column=0, columnspan=3, sticky=W + E + N + S, padx=3, pady=3
-        )
+        self.entry.grid( row=0, column=0, columnspan=3, 
+                         sticky=W + E + N + S, padx=3, pady=3)
 
         self.play.grid(row=2, column=0, sticky=NSEW)
         self.pause.grid(row=2, column=1, sticky=NSEW)
@@ -153,10 +152,9 @@ class Cuteplayer(Frame):
         self.skip.grid(row=5, column=0, sticky=NSEW)
         self.shuffleSongList.grid(row=5, column=1, sticky=NSEW)
 
-        self.VolumeSlider.grid(
-            row=8, column=0, columnspan=3, sticky=NSEW)
+        self.VolumeSlider.grid(row=8, column=0, columnspan=3, sticky=NSEW)
 
-        self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW)#, ipady=5)
+        self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW)
 
         self.timeline.grid(row=7, column=0, columnspan=3, sticky=NSEW)
 
