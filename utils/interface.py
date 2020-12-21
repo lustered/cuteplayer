@@ -9,10 +9,8 @@ from tkinter import ttk
 from subprocess import Popen
 from time import sleep
 from threading import Thread
+from .h import *
 
-
-def updateYT():
-    os.system("pip3 install --upgrade youtube-dl")
 
 class Cuteplayer(Frame):
     # update youtube-dl on start
@@ -51,7 +49,6 @@ class Cuteplayer(Frame):
         self.updateTable()
         self.updateTimeline()
         self.pack()
-        # self.dthread = multiprocessing.Process(target=self.download) # threaded dl
 
     def windowSettings(self, master):
         """Set the main window settings"""
