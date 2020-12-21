@@ -1,21 +1,23 @@
 import os
 import random
 import mutagen.mp3
+import fnmatch
 from pygame import mixer
 import pygame
 from tkinter import *
-import tkinter as tk
 from tkinter import ttk
-from tkinter.ttk import Treeview
 from subprocess import Popen
-import fnmatch
 from time import sleep
-import threading
+from threading import Thread
 
+
+def updateYT():
+    os.system("pip3 install --upgrade youtube-dl")
 
 class Cuteplayer(Frame):
     # update youtube-dl on start
-    os.system("pip3 install --upgrade youtube-dl")
+    uthread = Thread(target=updateYT)
+    uthread.start()
 
     # Path stuff
     path = "" + os.path.expanduser("~/Music") + "/cuteplayer/"
@@ -49,7 +51,7 @@ class Cuteplayer(Frame):
         self.updateTable()
         self.updateTimeline()
         self.pack()
-        self.dthread = threading.Thread(target=self.download) # threaded dl
+        # self.dthread = multiprocessing.Process(target=self.download) # threaded dl
 
     def windowSettings(self, master):
         """Set the main window settings"""
@@ -79,12 +81,12 @@ class Cuteplayer(Frame):
             command=self.master.destroy,
         )
 
-        self.enter = Button(
+        self.dl = Button(
             self,
             text="download",
             bg="pink",
             font=("ARCADECLASSIC", 20),
-            command=lambda: self.dthread.start(),
+            command=self._threadedDL
         )
 
         self.play = Button(
@@ -142,7 +144,7 @@ class Cuteplayer(Frame):
                              font=('ARCADECLASSIC', 10), wraplength=250)
 
         # packing/grid
-        self.enter.grid(row=1, column=0, sticky=NSEW)
+        self.dl.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
         self.entry.grid(
             row=0, column=0, columnspan=3, sticky=W + E + N + S, padx=3, pady=3
@@ -159,8 +161,8 @@ class Cuteplayer(Frame):
 
         self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW)#, ipady=5)
 
-
         self.timeline.grid(row=7, column=0, columnspan=3, sticky=NSEW)
+
 
     def VolAdjust(self, vol):
         self.vol = int(vol) / 100
@@ -182,17 +184,17 @@ class Cuteplayer(Frame):
         self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
         self.crtime = 0
 
+
     def selectedItem(self, event):
         """Play a song when clicking on the table"""
         self.after_cancel(self.que_song)
         try:
             curItem = self.table.focus()
-            # print(self.table.item(curItem)['text'])
             self.currentSong = self.path + \
                 self.table.item(curItem)["text"] + ".mp3"
             self.playlist = ["" + self.path + song for song in self.mp3_songs]
+
             self.update_sample_rate()
-            # play song selected in treeview table
             mixer.music.load(self.currentSong)
             mixer.music.play()
             print(self.currentSong.strip(self.path))
@@ -213,9 +215,6 @@ class Cuteplayer(Frame):
             sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
         except mutagen.MutagenError:
             pass
-            # print("Mutagen being bad")
-            # sleep(1)
-            # sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate  # retry
 
         # set appropiate sample rate if the song selected has a different one
         if self.sample_rate != sample_rate:
@@ -228,7 +227,7 @@ class Cuteplayer(Frame):
         """ Reset sample rate since it may vary from each song """
         # In case we change sample rate
         mixer.quit()  
-        mixer.init(self.sample_rate)
+        mixer.init(self.sample_rate, size=-16,channels=1)
         mixer.music.set_volume(self.vol)
 
     def shuffle_songs(self):
@@ -270,7 +269,7 @@ class Cuteplayer(Frame):
         )
         style.map('BW.TLabel', background=[('selected',"#c5a7d1")])
 
-        self.table = Treeview(self, columns=("songNumber"))
+        self.table = ttk.Treeview(self, columns=("songNumber"))
 
         # column labels
         self.table.column("songNumber", width=-50)
@@ -309,6 +308,8 @@ class Cuteplayer(Frame):
 
     def updateTimeline(self):
         """ Update the song slider """
+        if self.id is not None:
+            self.after_cancel(self.id)
         try:
             song = mutagen.mp3.MP3(self.currentSong)
             val = song.info.length
@@ -341,11 +342,17 @@ class Cuteplayer(Frame):
         for i, song in enumerate(self.mp3_songs):
             self.table.insert("", i, text="%s" % song[:len(song)-4], values=(i + 1))
 
+
+    def _threadedDL(self):
+        self.dthread = Thread(target=self.download) # threaded dl
+        self.dthread.start()
+
+
     def download(self):
         """ Downloads the song/video to the home/user/music/cuteplayer directory """
         if self.entry.get():
             try:
-                print("\n\t\t\t[ Video Downloading ]")
+                print("\n\t\t[ Video Downloading ]")
                 Popen(
                     [ "'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
                          '%s'" % (self.path + "%(title)s.%(ext)s", self.entry.get())
@@ -353,6 +360,6 @@ class Cuteplayer(Frame):
 
                 self.entry.delete(0, "end")
                 self.updateTable()
-
-            except Exception as e:
-                print("Error Downloading", e)
+            except (RuntimeError, Exception) as e:
+                print(e)
+                pass
