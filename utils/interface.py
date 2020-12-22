@@ -45,6 +45,7 @@ class Cuteplayer(Frame):
         self.windowSettings(master)
         self.mainMenu()
         self.music_settings()
+        mixer.pre_init(4800,-16,0)
         self.songsTable()
         self.updateTable()
         self.updateTimeline()
@@ -169,8 +170,12 @@ class Cuteplayer(Frame):
         if not self.currentSong:
             return
 
-        self.currentSong = self.playlist[self.playlist.index(
-            self.currentSong) + 1]
+        try:
+            self.currentSong = self.playlist[self.playlist.index(self.currentSong) + 1]
+        except IndexError:
+            print("Reached the end of the list...\nStarting over.")
+            self.currentSong = self.playlist[0]
+
 
         self.update_sample_rate()
         mixer.music.load(self.currentSong)
@@ -178,6 +183,12 @@ class Cuteplayer(Frame):
         print("new song: ", self.currentSong.strip(self.path))
         self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
         self.crtime = 0
+
+        # Getting the correct child_id for the currently playing song. We need this so
+        # we can focus the item on the songs table, then it'll be highlighted
+        child_id = self.table.get_children()[self.playlist.index(self.currentSong)]
+        self.table.focus(child_id)
+        self.table.selection_set(child_id)
 
 
     def selectedItem(self, event):
@@ -222,7 +233,7 @@ class Cuteplayer(Frame):
         """ Reset sample rate since it may vary from each song """
         # In case we change sample rate
         mixer.quit()  
-        mixer.init(self.sample_rate, size=-16,channels=1)
+        mixer.init(self.sample_rate)
         mixer.music.set_volume(self.vol)
 
     def shuffle_songs(self):
@@ -255,17 +266,16 @@ class Cuteplayer(Frame):
         """ Object Treeview/table """
         # List of songs in dir
         # styling for Treeview
-        style = ttk.Style()
-        style.configure(
-            "BW.TLabel",
-            foreground="black",
-            background="#e6d5ed",
-            font=("ARCADECLASSIC", 10),
-        )
-        style.map('BW.TLabel', background=[('selected',"#c5a7d1")])
+        self.style = ttk.Style()
+        self.style.configure("BW.TLabel", foreground="black", background="#e6d5ed",
+                          font=("ARCADECLASSIC", 10))
+
+        # Alternative style
+        # style.map('BW.TLabel', background=[('selected', 'black')])
+        # style.map('BW.TLabel', foreground=[('selected', '#c5a7d1')])
+        self.style.map('BW.TLabel', background=[('selected',"#c5a7d1")])
 
         self.table = ttk.Treeview(self, columns=("songNumber"))
-
         # column labels
         self.table.column("songNumber", width=-50)
         # font style
@@ -307,8 +317,7 @@ class Cuteplayer(Frame):
             self.after_cancel(self.id)
         try:
             song = mutagen.mp3.MP3(self.currentSong)
-            val = song.info.length
-            self.timeline.configure(to=val)
+            self.timeline.configure(to=song.info.length)
             self.timeline.set(self.crtime)
             self.crtime += 1
 
