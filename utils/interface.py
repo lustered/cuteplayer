@@ -176,19 +176,12 @@ class Cuteplayer(Frame):
             print("Reached the end of the list...\nStarting over.")
             self.currentSong = self.playlist[0]
 
-
         self.update_sample_rate()
         mixer.music.load(self.currentSong)
         mixer.music.play()
         print("new song: ", self.currentSong.strip(self.path))
         self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
         self.crtime = 0
-
-        # Getting the correct child_id for the currently playing song. We need this so
-        # we can focus the item on the songs table, then it'll be highlighted
-        child_id = self.table.get_children()[self.playlist.index(self.currentSong)]
-        self.table.focus(child_id)
-        self.table.selection_set(child_id)
 
 
     def selectedItem(self, event):
@@ -235,6 +228,13 @@ class Cuteplayer(Frame):
         mixer.quit()  
         mixer.init(self.sample_rate)
         mixer.music.set_volume(self.vol)
+
+        # Getting the correct child_id for the currently playing song. We need this so
+        # we can focus the item on the songs table, then it'll be highlighted
+        if self.currentSong:
+            child_id = self.table.get_children()[self.playlist.index(self.currentSong)]
+            self.table.focus(child_id)
+            self.table.selection_set(child_id)
 
     def shuffle_songs(self):
         """ Shuffle all current songs in the download directory and play them """
