@@ -140,7 +140,6 @@ class Cuteplayer(Frame):
 
         self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
                              font=('ARCADECLASSIC', 10), wraplength=250)
-
         # packing/grid
         self.dl.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
@@ -176,9 +175,7 @@ class Cuteplayer(Frame):
             print("Reached the end of the list...\nStarting over.")
             self.currentSong = self.playlist[0]
 
-        self.update_sample_rate()
-        mixer.music.load(self.currentSong)
-        mixer.music.play()
+        self.updatenplay()
         print("new song: ", self.currentSong.strip(self.path))
         self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
         self.crtime = 0
@@ -193,14 +190,11 @@ class Cuteplayer(Frame):
                 self.table.item(curItem)["text"] + ".mp3"
             self.playlist = ["" + self.path + song for song in self.mp3_songs]
 
-            self.update_sample_rate()
-            mixer.music.load(self.currentSong)
-            mixer.music.play()
+            self.updatenplay()
             print(self.currentSong.strip(self.path))
         except (FileNotFoundError, Exception):
             sleep(1)
-            mixer.music.load(self.currentSong)
-            mixer.music.play()
+            self.updatenplay()
 
         # Only show up to 30 characters to avoid line wrap
         self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
@@ -208,7 +202,7 @@ class Cuteplayer(Frame):
         self.crtime = 0
         self.que_song()
 
-    def update_sample_rate(self):
+    def updatenplay(self):
         try:
             # override sample rate for song
             sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
@@ -221,6 +215,8 @@ class Cuteplayer(Frame):
             self.sample_rate = sample_rate
 
         self.music_settings()  # init with new sample rate
+        mixer.music.load(self.currentSong) # Play new song
+        mixer.music.play()
 
     def music_settings(self):
         """ Reset sample rate since it may vary from each song """
@@ -248,9 +244,7 @@ class Cuteplayer(Frame):
 
         if self.playlist:
             self.currentSong = self.playlist[0]
-            self.update_sample_rate()
-            mixer.music.load(self.currentSong)
-            mixer.music.play(0)
+            self.updatenplay()
             self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
             # if self.playlist:
             self.que_song()
