@@ -39,7 +39,7 @@ function installEntry {
 Version=1.0
 Name=cuteplayer
 Comment=Cute music player to download music 
-Exec=python3 ${dir}/cuteplayer.py
+Exec=${dir}/cuteplayer.py
 Icon=${dir}/pics/cat.jpeg
 Path=${dir}
 Terminal=false

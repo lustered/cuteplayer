@@ -9,13 +9,10 @@ from tkinter import ttk
 from subprocess import Popen
 from time import sleep
 from threading import Thread
-from .h import *
-
 
 class Cuteplayer(Frame):
     # update youtube-dl on start
-    uthread = Thread(target=updateYT)
-    uthread.start()
+    uthread = Thread(target=lambda: os.system("pip3 install --upgrade youtube-dl")).start()
 
     # Path stuff
     path = "" + os.path.expanduser("~/Music") + "/cuteplayer/"
@@ -45,7 +42,7 @@ class Cuteplayer(Frame):
         self.windowSettings(master)
         self.mainMenu()
         self.music_settings()
-        mixer.pre_init(4800,-16,0)
+        mixer.pre_init(self.sample_rate,-16,0)
         self.songsTable()
         self.updateTable()
         self.updateTimeline()
@@ -60,103 +57,66 @@ class Cuteplayer(Frame):
         self.master.grid_propagate(False)
 
     def mainMenu(self):
-        # basic buttons
-        self.entry = Entry(
-            self,
-            fg="#333333",
-            # background="#e6d5ed",
-            background="#c6aadf",
-            font=("ARCADECLASSIC", 15),
-            width=20,
-            highlightbackground="#e6d5ed",
-        )
+       ############################## Buttons Setup ########################### 
+        self.entry = Entry(self, fg="#333333", background="#c6aadf",
+            font=("ARCADECLASSIC", 15), width=20, highlightbackground="#e6d5ed",)
 
-        self.quit = Button(
-            self,
-            text="quit",
-            bg="pink",
-            font=("ARCADECLASSIC", 20),
-            command=self.master.destroy,
-        )
+        self.quit = Button(self, text="quit", bg="pink", font=("ARCADECLASSIC", 20),
+                           command=self.master.destroy)
 
-        self.dl = Button(
-            self,
-            text="download",
-            bg="pink",
-            font=("ARCADECLASSIC", 20),
-            command=self._threadedDL
-        )
+        self.dl = Button(self, text="download", bg="pink", font=("ARCADECLASSIC", 20),
+                command=lambda: Thread(target=self.download).start()) # Run a new thread
 
-        self.play = Button(
-            self,
-            text="play",
-            bg="pink",
-            font=("ARCADECLASSIC", 20),
-            command=lambda: [mixer.music.unpause(), self.updateTimeline()]
-        )
+        self.play = Button(self, text="play", bg="pink", font=("ARCADECLASSIC", 20),
+                           command=lambda: [mixer.music.unpause(), self.updateTimeline()])
 
-        self.pause = Button(
-            self,
-            text="pause",
-            bg="pink",
-            font=("ARCADECLASSIC", 20),
-            command=lambda: [mixer.music.pause(), self.after_cancel(self.id)],
-        )
+        self.pause = Button(self, text="pause", bg="pink", font=("ARCADECLASSIC", 20),
+                        command=lambda: [mixer.music.pause(), self.after_cancel(self.id)])
 
-        self.shuffleSongList = Button(
-            self,
-            text="shuffle",
-            bg="pink",
-            font=("ARCADECLASSIC", 20),
-            command=self.shuffle_songs
-        )
+        self.shuffleSongList = Button(self, text="shuffle", bg="pink",
+                                font=("ARCADECLASSIC", 20), command=self._shuffle)
 
-        self.skip = Button(
-            self,
-            text="skip",
-            bg="pink",
-            font=("ARCADECLASSIC", 20),
-            command=self.skip_song
-        )
+        self.skipButton = Button(self, text="skip", bg="pink", font=("ARCADECLASSIC", 20),
+                                 command=self.skip)
+
+        self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
+                             font=('ARCADECLASSIC', 10), wraplength=250)
 
         self.VolumeSlider = Scale( self, length=5, font="ARCADECLASSIC",
                                 orient='horizontal', bg=self.bg_color, showvalue=0,
                                 command=self.VolAdjust, highlightthickness=10,
                                 highlightbackground=self.bg_color, troughcolor='#c6aadf')
 
-        self.VolumeSlider.configure(label="%60s"%("volume"))
-
-        self.timeline = Scale(
-            self, length=100, font="ARCADECLASSIC",
-            orient='horizontal', bg=self.bg_color, showvalue=0,
-            highlightthickness=10, highlightbackground=self.bg_color, troughcolor='pink',
-            label=' ')
-
-        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.id))
-        self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
-
         # Set the default value to 50% volume
         self.VolumeSlider.set(self.vol)
 
-        self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
-                             font=('ARCADECLASSIC', 10), wraplength=250)
-        # packing/grid
+        self.VolumeSlider.configure(label="%60s"%("volume"))
+
+        self.timeline = Scale( self, length=100, font="ARCADECLASSIC",
+                               orient='horizontal', bg=self.bg_color, showvalue=0,
+                               highlightthickness=10, highlightbackground=self.bg_color,
+                               troughcolor='pink', label=' ')
+
+        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.id))
+        self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
+        ############################## End ############################## 
+
+        ############################# Packing ############################## 
+        self.entry.grid( row=0, column=0, columnspan=3, sticky=W + E + N + S, padx=3, pady=3)
+
         self.dl.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
-        self.entry.grid( row=0, column=0, columnspan=3, 
-                         sticky=W + E + N + S, padx=3, pady=3)
 
         self.play.grid(row=2, column=0, sticky=NSEW)
         self.pause.grid(row=2, column=1, sticky=NSEW)
 
-        self.skip.grid(row=5, column=0, sticky=NSEW)
+        self.skipButton.grid(row=5, column=0, sticky=NSEW)
         self.shuffleSongList.grid(row=5, column=1, sticky=NSEW)
 
-        self.VolumeSlider.grid(row=8, column=0, columnspan=3, sticky=NSEW)
-
         self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW)
-
         self.timeline.grid(row=7, column=0, columnspan=3, sticky=NSEW)
+        self.VolumeSlider.grid(row=8, column=0, columnspan=3, sticky=NSEW)
+       ############################## END ############################## 
 
 
     def VolAdjust(self, vol):
@@ -164,7 +124,7 @@ class Cuteplayer(Frame):
         mixer.music.set_volume(self.vol)
 
 
-    def skip_song(self):
+    def skip(self):
         """Play the next song in the playlist"""
         if not self.currentSong:
             return
@@ -176,9 +136,6 @@ class Cuteplayer(Frame):
             self.currentSong = self.playlist[0]
 
         self.updatenplay()
-        print("new song: ", self.currentSong.strip(self.path))
-        self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
-        self.crtime = 0
 
 
     def selectedItem(self, event):
@@ -188,18 +145,13 @@ class Cuteplayer(Frame):
             curItem = self.table.focus()
             self.currentSong = self.path + \
                 self.table.item(curItem)["text"] + ".mp3"
-            self.playlist = ["" + self.path + song for song in self.mp3_songs]
 
+            self.playlist = ["" + self.path + song for song in self.mp3_songs]
             self.updatenplay()
-            print(self.currentSong.strip(self.path))
         except (FileNotFoundError, Exception):
             sleep(1)
             self.updatenplay()
 
-        # Only show up to 30 characters to avoid line wrap
-        self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
-
-        self.crtime = 0
         self.que_song()
 
     def updatenplay(self):
@@ -214,16 +166,14 @@ class Cuteplayer(Frame):
             print("new sample rate: ", sample_rate)
             self.sample_rate = sample_rate
 
-        self.music_settings()  # init with new sample rate
-        mixer.music.load(self.currentSong) # Play new song
+        # Re-init settings
+        self.music_settings()
+        mixer.music.load(self.currentSong)
         mixer.music.play()
 
-    def music_settings(self):
-        """ Reset sample rate since it may vary from each song """
-        # In case we change sample rate
-        mixer.quit()  
-        mixer.init(self.sample_rate)
-        mixer.music.set_volume(self.vol)
+        # Only show up to 30 characters to avoid line wrap
+        self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
+        self.crtime = 0
 
         # Getting the correct child_id for the currently playing song. We need this so
         # we can focus the item on the songs table, then it'll be highlighted
@@ -232,9 +182,18 @@ class Cuteplayer(Frame):
             self.table.focus(child_id)
             self.table.selection_set(child_id)
 
-    def shuffle_songs(self):
+        print(":: %s" % self.currentSong[len(self.path):-4])
+
+    def music_settings(self):
+        """ Reset sample rate since it may vary from each song """
+        # In case we change sample rate
+        mixer.quit()  
+        mixer.init(self.sample_rate)
+        mixer.music.set_volume(self.vol)
+
+
+    def _shuffle(self):
         """ Shuffle all current songs in the download directory and play them """
-        self.crtime = 0
         self.playlist = random.sample(self.mp3_songs, len(self.mp3_songs))
         self.playlist = ["" + self.path + song for song in self.playlist]
 
@@ -245,14 +204,13 @@ class Cuteplayer(Frame):
         if self.playlist:
             self.currentSong = self.playlist[0]
             self.updatenplay()
-            self.CurSong.configure(text=str(self.currentSong[len(self.path):-4])[:30])
             # if self.playlist:
             self.que_song()
 
     def que_song(self):
-        """ Used by the shuffle_songs function to queu the next song in the list """
+        """ Used by the _shuffle function to queu the next song in the list """
         if int(mixer.music.get_pos()) == -1:
-            self.skip_song()
+            self.skip()
 
         self.after(1000, self.que_song)
 
@@ -276,14 +234,7 @@ class Cuteplayer(Frame):
         self.table.configure(style="BW.TLabel")
         self.table.heading("songNumber", text="#")
 
-        self.table.grid(
-            row=3,
-            column=0,
-            rowspan=2,
-            columnspan=3,
-            sticky=W + E + N + S,
-            ipady=3,
-        )
+        self.table.grid(row=3, column=0, rowspan=2, columnspan=3, sticky=W + E + N + S, ipady=3,)
 
         # selecting songs from table
         self.table.bind("<ButtonRelease-1>", self.selectedItem)
@@ -323,16 +274,13 @@ class Cuteplayer(Frame):
         self.id = self.after(1000, self.updateTimeline)
 
 
-    # update table every 2 seconds
     def updateTable(self):
         """ Refresh the song table list """
         self.table.delete(*self.table.get_children())
-        pattern = "*.mp3"
-        _ls = os.listdir(self.path)
 
         # list of mp3 songs in dir
-        for entry in _ls:
-            if fnmatch.fnmatch(entry, pattern) and entry not in self.mp3_songs:
+        for entry in os.listdir(self.path):
+            if fnmatch.fnmatch(entry, "*.mp3") and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
 
         # add new song to table list
@@ -340,21 +288,14 @@ class Cuteplayer(Frame):
         for i, song in enumerate(self.mp3_songs):
             self.table.insert("", i, text="%s" % song[:len(song)-4], values=(i + 1))
 
-
-    def _threadedDL(self):
-        self.dthread = Thread(target=self.download) # threaded dl
-        self.dthread.start()
-
-
     def download(self):
         """ Downloads the song/video to the home/user/music/cuteplayer directory """
         if self.entry.get():
             try:
                 print("\n\t\t[ Video Downloading ]")
-                Popen(
-                    [ "'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
-                         '%s'" % (self.path + "%(title)s.%(ext)s", self.entry.get())
-                    ], shell=True).wait()
+                Popen(["'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
+                        '%s'" % (self.path + "%(title)s.%(ext)s", self.entry.get())],
+                        shell=True).wait()
 
                 self.entry.delete(0, "end")
                 self.updateTable()
