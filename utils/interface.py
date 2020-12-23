@@ -82,10 +82,10 @@ class Cuteplayer(Frame):
         self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
                              font=('ARCADECLASSIC', 10), wraplength=250)
 
-        self.VolumeSlider = Scale( self, length=5, font="ARCADECLASSIC",
-                                orient='horizontal', bg=self.bg_color, showvalue=0,
-                                command=self.VolAdjust, highlightthickness=10,
-                                highlightbackground=self.bg_color, troughcolor='#c6aadf')
+        self.VolumeSlider = Scale(self, length=5, font="ARCADECLASSIC", orient='horizontal',
+                                  bg=self.bg_color, showvalue=0, command=self.VolAdjust,
+                                  highlightthickness=10, highlightbackground=self.bg_color,
+                                  troughcolor='#c6aadf')
 
         # Set the default value to 50% volume
         self.VolumeSlider.set(self.vol)
@@ -154,7 +154,7 @@ class Cuteplayer(Frame):
 
         self.que_song()
 
-    def updatenplay(self):
+    def updatenplay(self, _shuffcall=None):
         try:
             # override sample rate for song
             sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
@@ -178,7 +178,10 @@ class Cuteplayer(Frame):
         # Getting the correct child_id for the currently playing song. We need this so
         # we can focus the item on the songs table, then it'll be highlighted
         if self.currentSong:
-            child_id = self.table.get_children()[self.playlist.index(self.currentSong)]
+            if _shuffcall is None:
+                child_id = self.table.get_children()[(self.playlist.index(self.currentSong))]
+            else:
+                child_id = self.table.get_children()[_shuffcall]
             self.table.focus(child_id)
             self.table.selection_set(child_id)
 
@@ -197,13 +200,16 @@ class Cuteplayer(Frame):
         self.playlist = random.sample(self.mp3_songs, len(self.mp3_songs))
         self.playlist = ["" + self.path + song for song in self.playlist]
 
+        print('playlist\n' , self.playlist)
+        print('mp3_songs\n' , self.mp3_songs)
+
         print("********** Current Playlist ********** ")
         for index, song in enumerate(self.playlist):
             print("%s - : %s" % (index, song.strip(self.path)))
 
         if self.playlist:
             self.currentSong = self.playlist[0]
-            self.updatenplay()
+            self.updatenplay(_shuffcall=self.mp3_songs.index(self.currentSong[len(self.path):]))
             # if self.playlist:
             self.que_song()
 
@@ -220,12 +226,12 @@ class Cuteplayer(Frame):
         # styling for Treeview
         self.style = ttk.Style()
         self.style.configure("BW.TLabel", foreground="black", background="#e6d5ed",
-                          font=("ARCADECLASSIC", 10))
+                              font=("ARCADECLASSIC", 10))
 
-        # Alternative style
-        # style.map('BW.TLabel', background=[('selected', 'black')])
-        # style.map('BW.TLabel', foreground=[('selected', '#c5a7d1')])
-        self.style.map('BW.TLabel', background=[('selected',"#c5a7d1")])
+        # Alternative highlighting style
+        self.style.map('BW.TLabel', background=[('selected', 'black')])
+        self.style.map('BW.TLabel', foreground=[('selected', '#c5a7d1')])
+        # self.style.map('BW.TLabel', background=[('selected',"#c5a7d1")])
 
         self.table = ttk.Treeview(self, columns=("songNumber"))
         # column labels
@@ -292,7 +298,7 @@ class Cuteplayer(Frame):
         """ Downloads the song/video to the home/user/music/cuteplayer directory """
         if self.entry.get():
             try:
-                print("\n\t\t[ Video Downloading ]")
+                print(":"*30+"[ Video Downloading ]"+(":"*30))
                 Popen(["'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
                         '%s'" % (self.path + "%(title)s.%(ext)s", self.entry.get())],
                         shell=True).wait()

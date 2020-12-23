@@ -1,13 +1,8 @@
 # Cuteplayer - simple GUI mp3 downloader/player
 
-Simple tkinter GUI to download and play youtube files in mp3 format using youtube-dl
+Simple and lightweight tkinter GUI to download and play youtube files in mp3 format using youtube-dl
 
 ![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/wTimeline.jpeg)
-
-## Timeline slider branch can:
-
-    .Control position of the song
-    .Update slider as the song plays
 
 # Install
 
@@ -27,11 +22,10 @@ Simple tkinter GUI to download and play youtube files in mp3 format using youtub
     or
     sudo apt-get install libav-tools
 
-## I do not own the font
-
-    https://www.dafont.com/arcade-classic-2.font
-
-# Branch known issues
+# Known issues
 
     .Slider continues if the timeline is manually changed while the song is paused.
-    .If the slider is set all the way to the end the frame locks up
+
+## Font credits: 
+
+    https://www.dafont.com/arcade-classic-2.font
