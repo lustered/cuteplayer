@@ -9,7 +9,7 @@ from tkinter import ttk
 from subprocess import Popen
 from time import sleep
 from threading import Thread
-from .utils import getColors
+from .utils import theme
 
 class Cuteplayer(Frame):
     # update youtube-dl on start
@@ -25,7 +25,7 @@ class Cuteplayer(Frame):
         print('Download directory exists at: ', path)
 
     # Theme selection
-    palette = getColors("default")
+    palette = theme("bliss")
 
     bgcolor             = palette['bgcolor']
     entrybg             = palette['entrybg']
@@ -35,6 +35,12 @@ class Cuteplayer(Frame):
     timelinetroughcolor = palette['timelinetroughcolor']
     highlightedsongfg   = palette['highlightedsongfg']
     highlightedsongbg   = palette['highlightedsongbg']
+    buttontext          = palette['buttontext']
+    currentsongtext     = palette['currentsongtext']
+    volumetext          = palette['volumetext']
+    timelinetext        = palette['timelinetext']
+    headerbg            = palette['headerbg']
+    headertext          = palette['headertext']
 
     mp3_songs   = []
     playlist    = []
@@ -70,29 +76,29 @@ class Cuteplayer(Frame):
         self.entry = Entry(self, fg=self.textcolor, background=self.entrybg,
             font=("ARCADECLASSIC", 15), width=20, highlightbackground=self.bgcolor)
 
-        self.quit = Button(self, text="quit", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
-                command=lambda: [self.master.destroy(), mixer.music.pause()])
+        self.quit = Button(self, text="quit", bg=self.buttonbg, fg=self.buttontext, font=("ARCADECLASSIC", 20),
+                command=lambda: [mixer.music.pause(), self.master.destroy()])
 
-        self.dl = Button(self, text="download", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
+        self.dl = Button(self, text="download", bg=self.buttonbg,fg=self.buttontext, font=("ARCADECLASSIC", 20),
                 command=lambda: Thread(target=self.download).start()) # Run a new thread
 
-        self.play = Button(self, text="play", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
+        self.play = Button(self, text="play", bg=self.buttonbg,fg=self.buttontext, font=("ARCADECLASSIC", 20),
                            command=lambda: [mixer.music.unpause(), self.updateTimeline()])
 
-        self.pause = Button(self, text="pause", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
+        self.pause = Button(self, text="pause", bg=self.buttonbg, fg=self.buttontext, font=("ARCADECLASSIC", 20),
                         command=lambda: [mixer.music.pause(), self.after_cancel(self.timelineid)])
 
-        self.shuffleSongList = Button(self, text="shuffle", bg=self.buttonbg,
+        self.shuffleSongList = Button(self, text="shuffle", bg=self.buttonbg, fg=self.buttontext,
                                 font=("ARCADECLASSIC", 20), command=self._shuffle)
 
-        self.skipButton = Button(self, text="skip", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
+        self.skipButton = Button(self, text="skip", bg=self.buttonbg,fg=self.buttontext, font=("ARCADECLASSIC", 20),
                                  command=self.skip)
 
-        self.CurSong = Label(self, bg=self.bgcolor, text="Now\tPlaying",
+        self.CurSong = Label(self, bg=self.bgcolor, text="Now\tPlaying", fg=self.currentsongtext,
                              font=('ARCADECLASSIC', 10), wraplength=250)
 
         self.VolumeSlider = Scale(self, length=5, font="ARCADECLASSIC", orient='horizontal',
-                                  bg=self.bgcolor, showvalue=0, command=self.VolAdjust,
+                                  bg=self.bgcolor, fg=self.volumetext, showvalue=0, command=self.VolAdjust,
                                   highlightthickness=10, highlightbackground=self.bgcolor,
                                   troughcolor=self.volumetroughcolor)
 
@@ -102,7 +108,7 @@ class Cuteplayer(Frame):
         self.VolumeSlider.configure(label="%60s"%("volume"))
 
         self.timeline = Scale( self, length=100, font="ARCADECLASSIC",
-                               orient='horizontal', bg=self.bgcolor, showvalue=0,
+                               orient='horizontal', bg=self.bgcolor, fg=self.timelinetext, showvalue=0,
                                highlightthickness=10, highlightbackground=self.bgcolor,
                                troughcolor=self.timelinetroughcolor, label=' ')
 
@@ -235,28 +241,36 @@ class Cuteplayer(Frame):
         self.queid = self.after(1000, self.que_song)
 
     def songsTable(self):
-        """ Object Treeview/table """
-        # List of songs in dir
-        # styling for Treeview
+        """ Widget Treeview/table with songs """
+        ####################### STYLE ####################### 
         self.style = ttk.Style()
-        self.style.configure("BW.TLabel", foreground=self.textcolor, background=self.bgcolor,
-                              font=("ARCADECLASSIC", 10))
 
-        # Alternative highlighting style
-        self.style.map('BW.TLabel', background=[('selected', self.highlightedsongbg)])
-        self.style.map('BW.TLabel', foreground=[('selected', self.highlightedsongfg)])
-        # self.style.map('BW.TLabel', background=[('selected',self.highlightedsongbg)])
+        ######## Treeview Styling
+        self.style.configure("Treeview", foreground=self.textcolor, background=self.bgcolor, 
+                borderwidth=0, fieldbackground=self.bgcolor, font=("ARCADECLASSIC", 10))
 
-        self.table = ttk.Treeview(self, columns=("songNumber"))
-        # column labels
+        # Selected song highlight colors
+        self.style.map('Treeview', background=[('selected', self.highlightedsongbg)])
+        self.style.map('Treeview', foreground=[('selected', self.highlightedsongfg)])
+
+        ######## Treeview Header Styling
+        self.style.configure("Treeview.Heading", background= self.headerbg,
+                              foreground=self.headertext, borderwidth=0)
+
+        # Hover highlight color
+        self.style.map('Treeview.Heading', background=[('selected', self.bgcolor)])
+        self.style.map('Treeview.Heading', foreground=[('selected', self.textcolor)])
+
+        ####################### STYLE ####################### 
+
+        self.table = ttk.Treeview(self, columns=("songNumber"), style="Treeview")
+        # Column config
         self.table.column("songNumber", width=-50)
-        # font style
-        self.table.configure(style="BW.TLabel")
-        self.table.heading("songNumber", text="#")
+        self.table.heading("songNumber", text="☪ ")
 
         self.table.grid(row=3, column=0, rowspan=2, columnspan=3, sticky=W + E + N + S, ipady=3,)
 
-        # selecting songs from table
+        # Selecting songs from table event
         self.table.bind("<ButtonRelease-1>", self.selectedItem)
 
     def setTimeline(self, _time_event):
