@@ -21,20 +21,28 @@ class Cuteplayer(Frame):
     if not os.path.exists(path):
         os.mkdir(path)
     else:
-        print('Download directory exists')
+        print('Download directory exists at: ', path)
 
-    mp3_songs = []
+    # Palette
+    bgcolor             = '#e6d5ed'
+    entrybg             = '#c6aadf'
+    textcolor           = 'black'
+    buttonbg            = 'pink'
+    volumetroughcolor   = '#c6aadf'
+    timelinetroughcolor = 'pink'
+    highlightedsongfg   = '#c5a7d1'
+    highlightedsongbg   = 'black'
+
+    mp3_songs   = []
+    playlist    = []
     currentSong = None
-    vol = 5
+    timelineid  = None
+    queid       = None
+    vol         = 5
     sample_rate = 48000
-    current_song_length = 0
-    playlist = []
-    bg_color = "#e6d5ed"
-    id = None
-    crtime = 0
-
-    print("default settings", "\nsample rate: ", sample_rate, "\nsong dir: ", path)
-    print("*"*90)
+    crtime      = 0
+    # print("default settings", "\nsample rate: ", sample_rate, "\nsong dir: ", path)
+    # print("*"*90)
 
     def __init__(self, master=None):
         super().__init__(master)
@@ -52,40 +60,40 @@ class Cuteplayer(Frame):
         """Set the main window settings"""
         self.master.geometry("330x560")
         self.master.title("cuteplayer")
-        self.master.configure(bg="#e6d5ed")
+        self.master.configure(bg=self.bgcolor)
         self.master.resizable(False, False)
         self.master.grid_propagate(False)
 
     def mainMenu(self):
        ############################## Buttons Setup ########################### 
-        self.entry = Entry(self, fg="#333333", background="#c6aadf",
-            font=("ARCADECLASSIC", 15), width=20, highlightbackground="#e6d5ed",)
+        self.entry = Entry(self, fg=self.textcolor, background=self.entrybg,
+            font=("ARCADECLASSIC", 15), width=20, highlightbackground=self.bgcolor)
 
-        self.quit = Button(self, text="quit", bg="pink", font=("ARCADECLASSIC", 20),
-                           command=self.master.destroy)
+        self.quit = Button(self, text="quit", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
+                command=lambda: [self.master.destroy(), mixer.music.pause()])
 
-        self.dl = Button(self, text="download", bg="pink", font=("ARCADECLASSIC", 20),
+        self.dl = Button(self, text="download", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
                 command=lambda: Thread(target=self.download).start()) # Run a new thread
 
-        self.play = Button(self, text="play", bg="pink", font=("ARCADECLASSIC", 20),
+        self.play = Button(self, text="play", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
                            command=lambda: [mixer.music.unpause(), self.updateTimeline()])
 
-        self.pause = Button(self, text="pause", bg="pink", font=("ARCADECLASSIC", 20),
-                        command=lambda: [mixer.music.pause(), self.after_cancel(self.id)])
+        self.pause = Button(self, text="pause", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
+                        command=lambda: [mixer.music.pause(), self.after_cancel(self.timelineid)])
 
-        self.shuffleSongList = Button(self, text="shuffle", bg="pink",
+        self.shuffleSongList = Button(self, text="shuffle", bg=self.buttonbg,
                                 font=("ARCADECLASSIC", 20), command=self._shuffle)
 
-        self.skipButton = Button(self, text="skip", bg="pink", font=("ARCADECLASSIC", 20),
+        self.skipButton = Button(self, text="skip", bg=self.buttonbg, font=("ARCADECLASSIC", 20),
                                  command=self.skip)
 
-        self.CurSong = Label(self, bg=self.bg_color, text="Now\tPlaying",
+        self.CurSong = Label(self, bg=self.bgcolor, text="Now\tPlaying",
                              font=('ARCADECLASSIC', 10), wraplength=250)
 
         self.VolumeSlider = Scale(self, length=5, font="ARCADECLASSIC", orient='horizontal',
-                                  bg=self.bg_color, showvalue=0, command=self.VolAdjust,
-                                  highlightthickness=10, highlightbackground=self.bg_color,
-                                  troughcolor='#c6aadf')
+                                  bg=self.bgcolor, showvalue=0, command=self.VolAdjust,
+                                  highlightthickness=10, highlightbackground=self.bgcolor,
+                                  troughcolor=self.volumetroughcolor)
 
         # Set the default value to 50% volume
         self.VolumeSlider.set(self.vol)
@@ -93,11 +101,11 @@ class Cuteplayer(Frame):
         self.VolumeSlider.configure(label="%60s"%("volume"))
 
         self.timeline = Scale( self, length=100, font="ARCADECLASSIC",
-                               orient='horizontal', bg=self.bg_color, showvalue=0,
-                               highlightthickness=10, highlightbackground=self.bg_color,
-                               troughcolor='pink', label=' ')
+                               orient='horizontal', bg=self.bgcolor, showvalue=0,
+                               highlightthickness=10, highlightbackground=self.bgcolor,
+                               troughcolor=self.timelinetroughcolor, label=' ')
 
-        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.id))
+        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.timelineid))
         self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
         ############################## End ############################## 
 
@@ -140,7 +148,9 @@ class Cuteplayer(Frame):
 
     def selectedItem(self, event):
         """Play a song when clicking on the table"""
-        self.after_cancel(self.que_song)
+        if self.queid is not None:
+            self.after_cancel(self.queid)
+
         try:
             curItem = self.table.focus()
             self.currentSong = self.path + \
@@ -197,6 +207,9 @@ class Cuteplayer(Frame):
 
     def _shuffle(self):
         """ Shuffle all current songs in the download directory and play them """
+        if self.queid is not None:
+            self.after_cancel(self.queid)
+
         self.playlist = random.sample(self.mp3_songs, len(self.mp3_songs))
         self.playlist = ["" + self.path + song for song in self.playlist]
 
@@ -218,20 +231,20 @@ class Cuteplayer(Frame):
         if int(mixer.music.get_pos()) == -1:
             self.skip()
 
-        self.after(1000, self.que_song)
+        self.queid = self.after(1000, self.que_song)
 
     def songsTable(self):
         """ Object Treeview/table """
         # List of songs in dir
         # styling for Treeview
         self.style = ttk.Style()
-        self.style.configure("BW.TLabel", foreground="black", background="#e6d5ed",
+        self.style.configure("BW.TLabel", foreground=self.textcolor, background=self.bgcolor,
                               font=("ARCADECLASSIC", 10))
 
         # Alternative highlighting style
-        self.style.map('BW.TLabel', background=[('selected', 'black')])
-        self.style.map('BW.TLabel', foreground=[('selected', '#c5a7d1')])
-        # self.style.map('BW.TLabel', background=[('selected',"#c5a7d1")])
+        self.style.map('BW.TLabel', background=[('selected', self.highlightedsongbg)])
+        self.style.map('BW.TLabel', foreground=[('selected', self.highlightedsongfg)])
+        # self.style.map('BW.TLabel', background=[('selected',self.highlightedsongbg)])
 
         self.table = ttk.Treeview(self, columns=("songNumber"))
         # column labels
@@ -248,7 +261,7 @@ class Cuteplayer(Frame):
     def setTimeline(self, _time_event):
         """ Set the position of the song in a timeline slider """
         if mixer.music.get_busy():
-            self.after_cancel(self.id)
+            self.after_cancel(self.timelineid)
             self.crtime += (mixer.music.get_pos() / 1000)
 
             # Check boundry since actual play time might be off and lock the frame.
@@ -264,8 +277,8 @@ class Cuteplayer(Frame):
 
     def updateTimeline(self):
         """ Update the song slider """
-        if self.id is not None:
-            self.after_cancel(self.id)
+        if self.timelineid is not None:
+            self.after_cancel(self.timelineid)
         try:
             song = mutagen.mp3.MP3(self.currentSong)
             self.timeline.configure(to=song.info.length)
@@ -277,7 +290,7 @@ class Cuteplayer(Frame):
         except Exception:
             pass
             
-        self.id = self.after(1000, self.updateTimeline)
+        self.timelineid = self.after(1000, self.updateTimeline)
 
 
     def updateTable(self):
