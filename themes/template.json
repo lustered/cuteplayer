@@ -1,0 +1,26 @@
+{
+    "colors": [
+        {
+            "bgcolor": "#FFFFFF",
+            "entrybg": "#FFFFFF",
+            "textcolor": "#000000",
+            "buttonbg": "#000000",
+            "buttontext": "#FFFFFF",
+            "volumetroughcolor": "#000000",
+            "timelinetroughcolor": "#000000",
+            "highlightedsongfg": "#FFFFFF",
+            "highlightedsongbg": "#000000",
+            "currentsongtext": "#000000",
+            "volumetext": "#000000",
+            "timelinetext": "#000000",
+            "headerbg": "#FFFFFF",
+            "headertext": "#000000",
+            "headericon": "☪ "
+        }
+    ],
+    "icons": [
+        {
+            "headericon": "☪ "
+        }
+    ]
+}

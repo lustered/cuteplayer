@@ -24,23 +24,6 @@ class Cuteplayer(Frame):
     else:
         print('Download directory exists at: ', path)
 
-    # Theme selection
-    palette = theme("bliss")
-
-    bgcolor             = palette['bgcolor']
-    entrybg             = palette['entrybg']
-    textcolor           = palette['textcolor']
-    buttonbg            = palette['buttonbg']
-    volumetroughcolor   = palette['volumetroughcolor']
-    timelinetroughcolor = palette['timelinetroughcolor']
-    highlightedsongfg   = palette['highlightedsongfg']
-    highlightedsongbg   = palette['highlightedsongbg']
-    buttontext          = palette['buttontext']
-    currentsongtext     = palette['currentsongtext']
-    volumetext          = palette['volumetext']
-    timelinetext        = palette['timelinetext']
-    headerbg            = palette['headerbg']
-    headertext          = palette['headertext']
 
     mp3_songs   = []
     playlist    = []
@@ -51,8 +34,26 @@ class Cuteplayer(Frame):
     sample_rate = 48000
     crtime      = 0
 
-    def __init__(self, master=None):
+    def __init__(self, master=None, _theme='default'):
         super().__init__(master)
+        # Theme selection
+        self.palette = theme(_theme)
+
+        self.bgcolor             = self.palette['bgcolor']
+        self.entrybg             = self.palette['entrybg']
+        self.textcolor           = self.palette['textcolor']
+        self.buttonbg            = self.palette['buttonbg']
+        self.volumetroughcolor   = self.palette['volumetroughcolor']
+        self.timelinetroughcolor = self.palette['timelinetroughcolor']
+        self.highlightedsongfg   = self.palette['highlightedsongfg']
+        self.highlightedsongbg   = self.palette['highlightedsongbg']
+        self.buttontext          = self.palette['buttontext']
+        self.currentsongtext     = self.palette['currentsongtext']
+        self.volumetext          = self.palette['volumetext']
+        self.timelinetext        = self.palette['timelinetext']
+        self.headerbg            = self.palette['headerbg']
+        self.headertext          = self.palette['headertext']
+
         self.master = master
         self.windowSettings(master)
         self.mainMenu()
@@ -62,6 +63,7 @@ class Cuteplayer(Frame):
         self.updateTable()
         self.updateTimeline()
         self.pack()
+
 
     def windowSettings(self, master):
         """Set the main window settings"""
