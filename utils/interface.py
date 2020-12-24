@@ -9,6 +9,7 @@ from tkinter import ttk
 from subprocess import Popen
 from time import sleep
 from threading import Thread
+from .utils import getColors
 
 class Cuteplayer(Frame):
     # update youtube-dl on start
@@ -23,15 +24,17 @@ class Cuteplayer(Frame):
     else:
         print('Download directory exists at: ', path)
 
-    # Palette
-    bgcolor             = '#e6d5ed'
-    entrybg             = '#c6aadf'
-    textcolor           = 'black'
-    buttonbg            = 'pink'
-    volumetroughcolor   = '#c6aadf'
-    timelinetroughcolor = 'pink'
-    highlightedsongfg   = '#c5a7d1'
-    highlightedsongbg   = 'black'
+    # Theme selection
+    palette = getColors("default")
+
+    bgcolor             = palette['bgcolor']
+    entrybg             = palette['entrybg']
+    textcolor           = palette['textcolor']
+    buttonbg            = palette['buttonbg']
+    volumetroughcolor   = palette['volumetroughcolor']
+    timelinetroughcolor = palette['timelinetroughcolor']
+    highlightedsongfg   = palette['highlightedsongfg']
+    highlightedsongbg   = palette['highlightedsongbg']
 
     mp3_songs   = []
     playlist    = []
@@ -41,8 +44,6 @@ class Cuteplayer(Frame):
     vol         = 5
     sample_rate = 48000
     crtime      = 0
-    # print("default settings", "\nsample rate: ", sample_rate, "\nsong dir: ", path)
-    # print("*"*90)
 
     def __init__(self, master=None):
         super().__init__(master)
