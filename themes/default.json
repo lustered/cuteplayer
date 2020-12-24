@@ -1,0 +1,14 @@
+{
+    "colors": [
+        {
+            "bgcolor": "#e6d5ed",
+            "entrybg": "#c6aadf",
+            "textcolor": "#000000",
+            "buttonbg": "#ffc0cb",
+            "volumetroughcolor": "#c6aadf",
+            "timelinetroughcolor": "#ffc0cb",
+            "highlightedsongfg": "#c5a7d1",
+            "highlightedsongbg": "#000000"
+        }
+    ]
+}
