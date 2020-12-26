@@ -2,7 +2,13 @@
 
 ### Simple and lightweight tkinter GUI to download and play youtube files in mp3 format using youtube-dl
 
-![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/wTimeline.jpeg)
+### Various themes
+
+    ![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/blissTheme.jpeg)
+
+    ![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/pastelTheme.jpeg)
+
+    ![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/flameTheme.jpeg)
 
 ## Install
 
