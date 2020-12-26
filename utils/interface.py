@@ -34,6 +34,7 @@ class Cuteplayer(Frame):
     vol         = 5
     sample_rate = 48000
     crtime      = 0
+    busy = None
 
     def __init__(self, master=None, _theme="default"):
         super().__init__(master)
@@ -81,8 +82,8 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            command=lambda: Thread(target=self.download).start(),
-        )  # Run a new thread
+            command=lambda: Thread(target=self.download).start() # Run a new thread
+        )  
 
         self.play = Button(
             self,
@@ -90,7 +91,7 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            command=lambda: [mixer.music.unpause(), self.updateTimeline()],
+            command=lambda: [mixer.music.unpause(), self.setbusy(False), self.updateTimeline()] 
         )
 
         self.pause = Button(
@@ -99,7 +100,7 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            command=lambda: [mixer.music.pause(), self.after_cancel(self.timelineid)],
+            command=lambda: [mixer.music.pause(), self.setbusy(True), self.after_cancel(self.timelineid)]
         )
 
         self.shuffleSongList = Button(
@@ -161,14 +162,12 @@ class Cuteplayer(Frame):
             highlightthickness=10,
             highlightbackground=self.palette["bgcolor"],
             troughcolor=self.palette["timelinetroughcolor"],
-            label=" ",
+            label="  ",
             activebackground=self.palette['bgcolor'],
             borderwidth=0,
         )
 
-        self.timeline.bind(
-            "<Button-1>", lambda event: self.after_cancel(self.timelineid)
-        )
+        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.timelineid))
         self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
         ############################## End ##############################
 
@@ -187,8 +186,11 @@ class Cuteplayer(Frame):
         self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW)
         self.timeline.grid(row=7, column=0, columnspan=3, sticky=NSEW)
         self.VolumeSlider.grid(row=8, column=0, columnspan=3, sticky=NSEW)
-
     ############################## END ##############################
+
+    def setbusy(self, state):
+        self.busy = state
+
 
     def VolAdjust(self, vol):
         self.vol = int(vol) / 100
@@ -243,7 +245,9 @@ class Cuteplayer(Frame):
 
         # Only show up to 30 characters to avoid line wrap
         self.CurSong.configure(text=str(self.currentSong[len(self.path) : -4])[:30])
+        self.setbusy(False)
         self.crtime = 0
+        self.updateTimeline()
 
         # Getting the correct child_id for the currently playing song. We need this so
         # we can focus the item on the songs table, then it'll be highlighted
@@ -351,6 +355,7 @@ class Cuteplayer(Frame):
 
     def setTimeline(self, _time_event):
         """ Set the position of the song in a timeline slider """
+
         if mixer.music.get_busy():
             self.after_cancel(self.timelineid)
             self.crtime += mixer.music.get_pos() / 1000
@@ -368,8 +373,12 @@ class Cuteplayer(Frame):
 
     def updateTimeline(self):
         """ Update the song slider """
+        # Close other instances -> Otherwise the play button will spawn multiple
+        # updateTimeline()
         if self.timelineid is not None:
             self.after_cancel(self.timelineid)
+
+        print("calling")
         try:
             song = mutagen.mp3.MP3(self.currentSong)
             self.timeline.configure(to=song.info.length)
@@ -381,7 +390,9 @@ class Cuteplayer(Frame):
         except Exception:
             pass
 
-        self.timelineid = self.after(1000, self.updateTimeline)
+        # if self.busy is True:
+        if self.busy is not True:
+            self.timelineid = self.after(1000, self.updateTimeline)
 
     def updateTable(self):
         """ Refresh the song table list """
