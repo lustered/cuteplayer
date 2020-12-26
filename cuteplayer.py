@@ -6,5 +6,5 @@ if __name__ == "__main__":
 
     ROOT = Tk()
     # ROOT.attributes('-topmost', True)
-    APP = Cuteplayer(master=ROOT, _theme="bliss")
+    APP = Cuteplayer(master=ROOT, _theme="flame")
     APP.mainloop()
