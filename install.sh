@@ -42,7 +42,7 @@ Comment=Cute music player to download music
 Exec=${dir}/cuteplayer.py
 Icon=${dir}/pics/cat.jpeg
 Path=${dir}
-Terminal=false
+Terminal=true
 Type=Application" > cuteplayer.desktop
 
         # Move entry 

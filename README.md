@@ -17,8 +17,9 @@
 
 ## Known issues
 
-    .Slider continues if the timeline is manually changed while the song is paused.
+    .Hitting the play button will add 1 second every time
+    .Wrong song is highlighted when using shuffle - when next song plays
 
-## Font credits: 
+## Font credits:
 
     https://www.dafont.com/arcade-classic-2.font
