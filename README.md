@@ -4,11 +4,11 @@
 
 ### Various themes
 
-![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/blissTheme.jpeg)
+![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/blissTheme.png)
 
-![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/pastelTheme.jpeg)
+![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/pastelTheme.png)
 
-![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/flameTheme.jpeg)
+![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/flameTheme.png)
 
 ## Install
 
