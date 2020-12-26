@@ -1,3 +1,4 @@
+from __future__ import unicode_literals
 import os
 import random
 from time import sleep
@@ -10,6 +11,8 @@ from tkinter import ttk
 from subprocess import Popen
 from threading import Thread
 from .utils import theme
+from subprocess import *
+import youtube_dl
 
 
 class Cuteplayer(Frame):
@@ -19,6 +22,7 @@ class Cuteplayer(Frame):
 
     # Path stuff
     path = "" + os.path.expanduser("~/Music") + "/cuteplayer/"
+    print(path)
 
     print("*" * 90)
     if not os.path.exists(path):
@@ -34,9 +38,9 @@ class Cuteplayer(Frame):
     vol         = 5
     sample_rate = 48000
     crtime      = 0
-    busy = None
+    busy        = None
 
-    def __init__(self, master=None, _theme="default"):
+    def __init__(self, master=None, _theme="pastel"):
         super().__init__(master)
         self.palette = theme(_theme)
         self.master = master
@@ -64,7 +68,7 @@ class Cuteplayer(Frame):
             fg=self.palette["textcolor"],
             background=self.palette["entrybg"],
             font=("ARCADECLASSIC", 15),
-            highlightbackground=self.palette["bgcolor"], bd=0,
+            highlightbackground=self.palette["bgcolor"], bd=3,
         )
 
         self.quit = Button(
@@ -73,7 +77,10 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            command=lambda: [mixer.music.pause(), self.master.destroy()],
+            highlightbackground=self.palette['bgcolor'],
+            highlightthickness=3,
+            activebackground=self.palette['activebuttonbg'],
+            command=lambda: [mixer.music.pause(), self.master.destroy()]
         )
 
         self.dl = Button(
@@ -82,6 +89,9 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
+            highlightbackground=self.palette['bgcolor'],
+            highlightthickness=3,
+            activebackground=self.palette['activebuttonbg'],
             command=lambda: Thread(target=self.download).start() # Run a new thread
         )  
 
@@ -91,6 +101,9 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
+            highlightbackground=self.palette['bgcolor'],
+            highlightthickness=3,
+            activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.music.unpause(), self.setbusy(False), self.updateTimeline()] 
         )
 
@@ -100,6 +113,9 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
+            highlightbackground=self.palette['bgcolor'],
+            highlightthickness=3,
+            activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.music.pause(), self.setbusy(True), self.after_cancel(self.timelineid)]
         )
 
@@ -109,6 +125,9 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
+            highlightthickness=3,
+            highlightbackground=self.palette['bgcolor'],
+            activebackground=self.palette['activebuttonbg'],
             command=self._shuffle,
         )
 
@@ -118,6 +137,9 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
+            highlightbackground=self.palette['bgcolor'],
+            highlightthickness=3,
+            activebackground=self.palette['activebuttonbg'],
             command=self.skip,
         )
 
@@ -172,7 +194,7 @@ class Cuteplayer(Frame):
         ############################## End ##############################
 
         ############################# Packing ##############################
-        self.entry.grid(row=0, column=0, columnspan=3, sticky=W + E + N + S, padx=3, pady=3)
+        self.entry.grid(row=0, column=0, columnspan=3, sticky=W + E + N + S)#, padx=3, pady=3)
 
         self.dl.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
@@ -189,8 +211,8 @@ class Cuteplayer(Frame):
     ############################## END ##############################
 
     def setbusy(self, state):
+        """ Set current state """
         self.busy = state
-
 
     def VolAdjust(self, vol):
         self.vol = int(vol) / 100
@@ -347,7 +369,6 @@ class Cuteplayer(Frame):
             rowspan=2,
             columnspan=3,
             sticky=W + E + N + S,
-            ipady=3,
         )
 
         # Selecting songs from table event
@@ -355,7 +376,6 @@ class Cuteplayer(Frame):
 
     def setTimeline(self, _time_event):
         """ Set the position of the song in a timeline slider """
-
         if mixer.music.get_busy():
             self.after_cancel(self.timelineid)
             self.crtime += mixer.music.get_pos() / 1000
@@ -373,12 +393,10 @@ class Cuteplayer(Frame):
 
     def updateTimeline(self):
         """ Update the song slider """
-        # Close other instances -> Otherwise the play button will spawn multiple
-        # updateTimeline()
+        # Close other instances -> Otherwise the play button will spawn multiple instances
         if self.timelineid is not None:
             self.after_cancel(self.timelineid)
 
-        print("calling")
         try:
             song = mutagen.mp3.MP3(self.currentSong)
             self.timeline.configure(to=song.info.length)
@@ -390,8 +408,7 @@ class Cuteplayer(Frame):
         except Exception:
             pass
 
-        # if self.busy is True:
-        if self.busy is not True:
+        if self.busy is False:
             self.timelineid = self.after(1000, self.updateTimeline)
 
     def updateTable(self):
@@ -409,18 +426,21 @@ class Cuteplayer(Frame):
             self.table.insert("", i, text="%s" % song[: len(song) - 4], values=(i + 1))
 
     def download(self):
-        """ Downloads the song/video to the home/user/music/cuteplayer directory """
-        if self.entry.get():
-            try:
-                print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
-                Popen(
-                    [
-                        "'youtube-dl' '-o' '%s' '--extract-audio' '--audio-format' 'mp3'\
-                        '%s'" % (self.path + "%(title)s.%(ext)s", self.entry.get())
-                    ], shell=True).wait()
+        """ Download the song to the path and covert to mp3 if necessary """
+        dpath = self.path + "%(title)s.%(ext)s"
+        ydl_opts = {
+                'format': 'bestaudio/best',
+                'outtmpl': dpath,
+                'postprocessors':[{
+                    'key': 'FFmpegExtractAudio',
+                    'preferredcodec': 'mp3',
+                    'preferredquality': '192',
+                    }], }
 
-                self.entry.delete(0, "end")
-                self.updateTable()
-            except (RuntimeError, Exception) as e:
-                print(e)
-                pass
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
+            ydl.download([self.entry.get()])
+            print(":" * 30 + "[ Song Downloaded ]" + (":" * 30))
+
+        self.entry.delete(0, "end")
+        self.updateTable()
