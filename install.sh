@@ -1,17 +1,5 @@
 #!/bin/bash
 
-# Build app executable
-function buildExecutable {
-
-    printf "\n\n[::Do you want to build the executable?::]\n"
-    select yn in "Yes" "No"; do
-        case $yn in
-            [Yy]* ) printf "\n\n[::Building executable::]\n" ; pyinstaller --onefile --icon=pics/cato.ico cuteplayer.py; break;;
-            [Nn]* ) exit;;
-        esac
-    done
-}
-
 function installFont {
     # Download font, remove unnecessary files
     printf "\n[::Downloading & Installing font::]\n"
@@ -40,9 +28,9 @@ Version=1.0
 Name=cuteplayer
 Comment=Cute music player to download music 
 Exec=${dir}/cuteplayer.py
-Icon=${dir}/pics/cat.jpeg
+Icon=${dir}/pics/cato.ico
 Path=${dir}
-Terminal=true
+Terminal=false
 Type=Application" > cuteplayer.desktop
 
         # Move entry 
@@ -57,14 +45,14 @@ Type=Application" > cuteplayer.desktop
 
 function installRequirements {
 
-    pip3 install tk pygame==1.9.6 mutagen youtube-dl pyinstaller
+    pip3 install tk pygame==1.9.6 mutagen youtube-dl 
 
-    if [[ "$u" == "Linux" ]] 
-    then
-        sudo apt-get install python3-dev python-dev
-    else
-        brew install python3-dev python-dev
-    fi
+    # if [[ "$u" == "Linux" ]] 
+    # then
+    #     sudo apt-get install python3-dev python-dev
+    # else
+    #     brew install python3-dev python-dev
+    # fi
 }
 
 # Do stuff
@@ -74,4 +62,3 @@ dir=`pwd`
 installRequirements
 installFont
 installEntry
-buildExecutable
