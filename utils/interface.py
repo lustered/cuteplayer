@@ -10,38 +10,40 @@ from tkinter import *
 from tkinter import ttk
 from subprocess import Popen
 from threading import Thread
-from .utils import theme
 from subprocess import *
 import youtube_dl
+from .utils import theme
+from .utils import tStyle
 
 
 class Cuteplayer(Frame):
-    # update youtube-dl on start
-    uthread = Thread(target=lambda: os.system("pip3 install --upgrade youtube-dl"))
-    uthread.start()
 
     # Path stuff
     path = "" + os.path.expanduser("~/Music") + "/cuteplayer/"
-    print(path)
-
     print("*" * 90)
     if not os.path.exists(path):
         os.mkdir(path)
     else:
         print("Download directory exists at: ", path)
 
+    # List with songs being displayed in the table
     mp3_songs   = []
+    # Current actual playlist Eg. Shuffle/Normal orders
     playlist    = []
     currentSong = None
     timelineid  = None
     queid       = None
-    vol         = 5
+    vol         = 50
     sample_rate = 48000
     crtime      = 0
     busy        = None
 
-    def __init__(self, master=None, _theme="pastel"):
+    def __init__(self, master, _theme="pastel"):
         super().__init__(master)
+        # update youtube-dl on start
+        uthread = Thread(target=lambda: os.system("pip3 install --upgrade youtube-dl"))
+        uthread.start()
+
         self.palette = theme(_theme)
         self.master = master
         self.windowSettings(master)
@@ -65,7 +67,7 @@ class Cuteplayer(Frame):
         ############################## Buttons Setup ###########################
         self.entry = Entry(
             self,
-            fg=self.palette["textcolor"],
+            fg=self.palette["entrytext"],
             background=self.palette["entrybg"],
             font=("ARCADECLASSIC", 15),
             highlightbackground=self.palette["bgcolor"], bd=3,
@@ -219,7 +221,7 @@ class Cuteplayer(Frame):
         mixer.music.set_volume(self.vol)
 
     def skip(self):
-        """Play the next song in the playlist"""
+        """ Play the next song in the playlist """
         if not self.currentSong:
             return
 
@@ -238,8 +240,13 @@ class Cuteplayer(Frame):
 
         try:
             curItem = self.table.focus()
+            # Remove the selection dashed lines after the focus redraws
+            # self.master.focus_set()
+
             self.currentSong = self.path + self.table.item(curItem)["text"] + ".mp3"
 
+            # Override playlist if the user manually selects a song from the table
+            # This is needed as the _shuffle function rearranges the order
             self.playlist = ["" + self.path + song for song in self.mp3_songs]
             self.updatenplay()
         except (FileNotFoundError, Exception):
@@ -248,7 +255,7 @@ class Cuteplayer(Frame):
 
         self.que_song()
 
-    def updatenplay(self, _shuffcall=None):
+    def updatenplay(self):
         try:
             # override sample rate for song
             sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
@@ -274,11 +281,9 @@ class Cuteplayer(Frame):
         # Getting the correct child_id for the currently playing song. We need this so
         # we can focus the item on the songs table, then it'll be highlighted
         if self.currentSong:
-            if _shuffcall is None:
-                child_id = self.table.get_children()[(self.playlist.index(self.currentSong))]
-            else:
-                child_id = self.table.get_children()[_shuffcall]
-            self.table.focus(child_id)
+            child_index = self.mp3_songs.index(self.currentSong[len(self.path) :])
+            child_id = self.table.get_children()[child_index]
+
             self.table.selection_set(child_id)
 
         print(":: %s" % self.currentSong[len(self.path) : -4])
@@ -304,14 +309,14 @@ class Cuteplayer(Frame):
 
         if self.playlist:
             self.currentSong = self.playlist[0]
-            self.updatenplay(
-                _shuffcall=self.mp3_songs.index(self.currentSong[len(self.path) :])
-            )
+            # self.updatenplay(_shuffcall=self.mp3_songs.index(self.currentSong[len(self.path) :]))
+            self._shuffcall = True
+            self.updatenplay()
             # if self.playlist:
             self.que_song()
 
     def que_song(self):
-        """ Used by the _shuffle function to queu the next song in the list """
+        """ Used to queu the next song """
         if int(mixer.music.get_pos()) == -1:
             self.skip()
 
@@ -319,45 +324,8 @@ class Cuteplayer(Frame):
 
     def songsTable(self):
         """ Widget Treeview/table with songs """
-        ####################### STYLE #######################
-        self.style = ttk.Style()
-
-        ######## Treeview Styling
-        self.style.configure(
-            "Treeview",
-            foreground=self.palette["textcolor"],
-            background=self.palette["bgcolor"],
-            borderwidth=0,
-            fieldbackground=self.palette["bgcolor"],
-            font=("ARCADECLASSIC", 10),
-        )
-
-        # Selected song highlight colors
-        self.style.map(
-            "Treeview", background=[("selected", self.palette["highlightedsongbg"])]
-        )
-        self.style.map(
-            "Treeview", foreground=[("selected", self.palette["highlightedsongfg"])]
-        )
-
-        ######## Treeview Header Styling
-        self.style.configure(
-            "Treeview.Heading",
-            background=self.palette["headerbg"],
-            foreground=self.palette["headertext"],
-            borderwidth=0,
-        )
-
-        # Hover highlight color
-        self.style.map(
-            "Treeview.Heading", background=[("selected", self.palette["bgcolor"])]
-        )
-        self.style.map(
-            "Treeview.Heading", foreground=[("selected", self.palette["textcolor"])]
-        )
-
-        ####################### STYLE #######################
-
+        # Get customized style
+        style = tStyle()
         self.table = ttk.Treeview(self, columns=("songNumber"), style="Treeview")
         # Column config
         self.table.column("songNumber", width=-50)
@@ -435,7 +403,8 @@ class Cuteplayer(Frame):
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'mp3',
                     'preferredquality': '192',
-                    }], }
+                    }],
+                }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
