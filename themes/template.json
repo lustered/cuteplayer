@@ -15,7 +15,8 @@
       "timelinetext": "#000000",
       "headerbg": "#FFFFFF",
       "headertext": "#000000",
-      "activebuttonbg": "#FFFFFF"
+      "activebuttonbg": "#FFFFFF",
+      "entrytext": "#000000"
     }
   ],
   "icons": [
