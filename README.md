@@ -1,4 +1,4 @@
-# Cuteplayer
+# Cuteplayer - A retro arcade music player
 
 ### Simple and lightweight tk GUI to download and play youtube files in mp3 format
 
@@ -29,7 +29,7 @@
 
 ## Known issues
 
-    .Hitting the play button will add 1 second every time
+    Hitting the play button will add 1 second every time
 
 ## Font:
 
