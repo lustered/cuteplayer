@@ -4,11 +4,9 @@
 
 ### Themes
 
-![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/blissTheme.png)
+![bliss](https://github.com/lustered/cuteplayer/blob/master/pics/blissTheme.png) ![rainy](https://github.com/lustered/cuteplayer/blob/master/pics/rainyTheme.png)
 
-![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/pastelTheme.png)
-
-![cuteplayer](https://github.com/lustered/cuteplayer/blob/master/pics/flameTheme.png)
+![pastel](https://github.com/lustered/cuteplayer/blob/master/pics/pastelTheme.png) ![flame](https://github.com/lustered/cuteplayer/blob/master/pics/flameTheme.png)
 
 ## Install | Linux
 
