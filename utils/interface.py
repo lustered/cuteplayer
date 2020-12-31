@@ -340,6 +340,7 @@ class Cuteplayer(Frame):
         )
 
         # Selecting songs from table event
+        self.table.bind("<Return>", self.selectedItem)
         self.table.bind("<ButtonRelease-1>", self.selectedItem)
 
     def setTimeline(self, _time_event):
