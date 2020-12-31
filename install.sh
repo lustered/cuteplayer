@@ -16,6 +16,10 @@ function installFont {
         # System wide fonts
         mv ARCADECLASSIC.TFF /Library/Fonts
     fi
+
+    if [ "$(expr substr $(uname -s) 1 10)" == "MINGW64_NT" ]; then
+       printf "\nPlease install the font in the directory\n"
+    fi
 }
 
 # Create desktop entry 
@@ -45,14 +49,25 @@ Type=Application" > cuteplayer.desktop
 
 function installRequirements {
 
-    pip3 install tk pygame==1.9.6 mutagen youtube-dl 
+    if [ -f "/etc/arch-release" ]; then
+        ver=$(python -V 2>$1 | sed 's/.* \([0-9]\).\([0-9]\).*/\1\2/')
+        if [ "$ver" -gt "38" ]; then
+            printf "\nInstalling python3.6 on the system\n"
+            mkdir tmp
+            cd tmp
+            git clone https://aur.archlinux.org/python36.git
+            cd python36
+            makepkg -si
+            curl -O https://bootstrap.pypa.io/get-pip.py
+            python3.6 get-pip.py
+            python3.6 -m pip install tk pygame==1.9.6 mutagen youtube-dl 
 
-    # if [[ "$u" == "Linux" ]] 
-    # then
-    #     sudo apt-get install python3-dev python-dev
-    # else
-    #     brew install python3-dev python-dev
-    # fi
+        else
+            pip3 install tk pygame==1.9.6 mutagen youtube-dl 
+        fi
+    else
+        pip3 install tk pygame==1.9.6 mutagen youtube-dl 
+    fi
 }
 
 # Do stuff

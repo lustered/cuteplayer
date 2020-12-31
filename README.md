@@ -8,9 +8,13 @@
 
 ![pastel](https://github.com/lustered/cuteplayer/blob/master/pics/pastelTheme.png) ![flame](https://github.com/lustered/cuteplayer/blob/master/pics/flameTheme.png)
 
-## Install | Linux
+## Install | Quite crappy install script
 
-    ./install.sh
+##### It will install python3.6 for arch systems since most likely 3.9+ will be installed.
+
+##### If you don't want it to, just make sure you have a python3 < 3.9 version and install the requirements
+
+    ./install
 
 ## Mac
 
@@ -24,6 +28,10 @@
     - pip3 install tk pygame==1.9.6 mutagen youtube-dl pyinstaller
     - Download ffmpeg/ffprobe/ffplay package from https://www.gyan.dev/ffmpeg/builds/
     - You will need to add it to your Path env
+
+## Alternatively
+
+    pip3 install -r requirements.txt
 
 ## Known issues
 
