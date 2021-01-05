@@ -60,7 +60,7 @@ function installRequirements {
             makepkg -si
             curl -O https://bootstrap.pypa.io/get-pip.py
             python3.6 get-pip.py
-            python3.6 -m pip install tk pygame==1.9.6 mutagen youtube-dl python-mpv
+            python3.6 -m pip install tk pygame==1.9.6 mutagen youtube-dl python-mpv==0.3.9
 
         else
             pip3 install tk pygame==1.9.6 mutagen youtube-dl 
