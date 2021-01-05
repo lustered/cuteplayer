@@ -290,25 +290,30 @@ class Cuteplayer(Frame):
 
 
         # Re-init settings
-        self.music_settings()
-        mixer.music.load(self.currentSong)
-        mixer.music.play()
+        try:
+            self.music_settings()
+            mixer.music.load(self.currentSong)
+            mixer.music.play()
+            
+            # Only show up to 30 characters to avoid line wrap
+            self.CurSong.configure(text=str(self.currentSong[len(self.path) : -4])[:30])
+            self.setbusy(False)
+            self.crtime = 0
+            self.updateTimeline()
 
-        # Only show up to 30 characters to avoid line wrap
-        self.CurSong.configure(text=str(self.currentSong[len(self.path) : -4])[:30])
-        self.setbusy(False)
-        self.crtime = 0
-        self.updateTimeline()
+            # Getting the correct child_id for the currently playing song. We need this so
+            # we can focus the item on the songs table, then it'll be highlighted
+            if self.currentSong:
+                child_index = self.mp3_songs.index(self.currentSong[len(self.path) :])
+                child_id = self.table.get_children()[child_index]
 
-        # Getting the correct child_id for the currently playing song. We need this so
-        # we can focus the item on the songs table, then it'll be highlighted
-        if self.currentSong:
-            child_index = self.mp3_songs.index(self.currentSong[len(self.path) :])
-            child_id = self.table.get_children()[child_index]
+                self.table.selection_set(child_id)
 
-            self.table.selection_set(child_id)
+            print(":: %s" % self.currentSong[len(self.path) : -4])
+        except pygame.error:
+            print("Some pygame error I can't fix")
+            pass
 
-        print(":: %s" % self.currentSong[len(self.path) : -4])
 
     def music_settings(self):
         """ Reset sample rate since it may vary from each song """
