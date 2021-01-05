@@ -12,9 +12,15 @@ def theme(_theme: str) -> dict:
         colors = json.loads(f.read())
     return colors["colors"][0]
 
-def playVideo(path):
+def playVideo(path: str):
+    """ Plays the video given the path using mpv """
     try:
-        player = mpv.MPV()
+        player = mpv.MPV(player_operation_mode='pseudo-gui',
+                 script_opts='osc-layout=box,osc-seekbarstyle=bar,osc-deadzonesize=0,osc-minmousemove=3',
+                 input_default_bindings=True,
+                 input_vo_keyboard=True,
+                 osc=True)
+
         player.play(path)
         player.wait_for_playback()
         player.terminate()
