@@ -12,8 +12,7 @@ from subprocess import Popen
 from threading import Thread
 from subprocess import *
 import youtube_dl
-from .utils import theme
-from .utils import tStyle
+from .utils import theme, tStyle, playVideo
 
 
 class Cuteplayer(Frame):
@@ -30,6 +29,7 @@ class Cuteplayer(Frame):
     mp3_songs   = []
     # Current actual playlist Eg. Shuffle/Normal orders
     playlist    = []
+    videos      = []
     currentSong = None
     timelineid  = None
     queid       = None
@@ -71,6 +71,7 @@ class Cuteplayer(Frame):
             background=self.palette["entrybg"],
             font=("ARCADECLASSIC", 15),
             highlightbackground=self.palette["bgcolor"], bd=3,
+            highlightthickness=0,
         )
 
         self.quit = Button(
@@ -82,7 +83,7 @@ class Cuteplayer(Frame):
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
             activebackground=self.palette['activebuttonbg'],
-            command=lambda: [mixer.music.pause(), self.master.destroy()]
+            command=lambda: [self.master.destroy()]
         )
 
         self.dl = Button(
@@ -238,20 +239,37 @@ class Cuteplayer(Frame):
         if self.queid is not None:
             self.after_cancel(self.queid)
 
-        try:
-            curItem = self.table.focus()
-            # Remove the selection dashed lines after the focus redraws
-            # self.master.focus_set()
+        # If the item selected is a from the song menu
+        if self.menu.index(self.menu.select()) == 0:
+            try:
+                curItem = self.table.focus()
+                # Remove the selection dashed lines after the focus redraws
+                # self.master.focus_set()
 
-            self.currentSong = self.path + self.table.item(curItem)["text"] + ".mp3"
+                self.currentSong = self.path + self.table.item(curItem)["text"] 
 
-            # Override playlist if the user manually selects a song from the table
-            # This is needed as the _shuffle function rearranges the order
-            self.playlist = ["" + self.path + song for song in self.mp3_songs]
-            self.updatenplay()
-        except (FileNotFoundError, Exception):
-            sleep(1)
-            self.updatenplay()
+                # Override playlist if the user manually selects a song from the table
+                # This is needed as the _shuffle function rearranges the order
+                self.playlist = ["" + self.path + song for song in self.mp3_songs]
+                self.updatenplay()
+            except (FileNotFoundError, Exception):
+                sleep(1)
+                self.updatenplay()
+
+        else: #if it's a video
+
+            # Pause the current song if there's something playing.
+            mixer.music.pause()
+
+            # Start a new thread with the video playing.
+            # This is needed to not lock up the tk frame and allows for multiple instances
+            # of videos.
+
+            # Path to video
+            pv = self.path + self.vtable.item(self.vtable.focus())['text']
+
+            vthread = Thread(target=lambda: playVideo(pv))
+            vthread.start()
 
         self.que_song()
 
@@ -259,13 +277,14 @@ class Cuteplayer(Frame):
         try:
             # override sample rate for song
             sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
+
+            # set appropiate sample rate if the song selected has a different one
+            if self.sample_rate != sample_rate:
+                print("new sample rate: ", sample_rate)
+                self.sample_rate = sample_rate
         except mutagen.MutagenError:
             pass
 
-        # set appropiate sample rate if the song selected has a different one
-        if self.sample_rate != sample_rate:
-            print("new sample rate: ", sample_rate)
-            self.sample_rate = sample_rate
 
         # Re-init settings
         self.music_settings()
@@ -324,14 +343,27 @@ class Cuteplayer(Frame):
 
     def songsTable(self):
         """ Widget Treeview/table with songs """
+
         # Get customized style
         style = tStyle()
-        self.table = ttk.Treeview(self, columns=("songNumber"), style="Treeview")
+
+        # Tabs
+        self.menu = ttk.Notebook(self)
+
+        self.table = ttk.Treeview(self.menu, columns=("songNumber"), style="Treeview")
+        self.vtable = ttk.Treeview(self.menu, columns=("songNumber"), style="Treeview")
+
         # Column config
         self.table.column("songNumber", width=-50)
         self.table.heading("songNumber", text="☪ ")
 
-        self.table.grid(
+        self.vtable.column("songNumber", width=-50)
+        self.vtable.heading("songNumber", text="☪ ")
+
+        self.menu.add(self.table,text='mp3')
+        self.menu.add(self.vtable,text='videos')
+
+        self.menu.grid(
             row=3,
             column=0,
             rowspan=2,
@@ -339,9 +371,15 @@ class Cuteplayer(Frame):
             sticky=W + E + N + S,
         )
 
+        # Menu selection
+        self.menu.bind("<ButtonRelease-1>", self.updateTable)
+
         # Selecting songs from table event
         self.table.bind("<Return>", self.selectedItem)
         self.table.bind("<ButtonRelease-1>", self.selectedItem)
+
+        self.vtable.bind("<Return>", self.selectedItem)
+        self.vtable.bind("<ButtonRelease-1>", self.selectedItem)
 
     def setTimeline(self, _time_event):
         """ Set the position of the song in a timeline slider """
@@ -380,26 +418,38 @@ class Cuteplayer(Frame):
         if self.busy is False:
             self.timelineid = self.after(1000, self.updateTimeline)
 
-    def updateTable(self):
+    def updateTable(self, _ = None):
         """ Refresh the song table list """
         self.table.delete(*self.table.get_children())
+        self.vtable.delete(*self.vtable.get_children())
 
         # list of mp3 songs in dir
         for entry in os.listdir(self.path):
             if fnmatch.fnmatch(entry, "*.mp3") and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
 
+            # if fnmatch.fnmatch(entry, "*.mkv") and entry not in self.videos: 
+            if entry.endswith(('.mkv','.mp4')) and entry not in self.videos:
+                self.videos.append(entry)
+
         # add new song to table list
         self.mp3_songs.sort()
-        for i, song in enumerate(self.mp3_songs):
-            self.table.insert("", i, text="%s" % song[: len(song) - 4], values=(i + 1))
+        self.videos.sort()
+
+        tab, table = (self.mp3_songs,self.table) if self.menu.index(self.menu.select()) == 0 \
+                    else (self.videos, self.vtable)
+
+        for i, song in enumerate(tab):
+            # table.insert("", i, text="%s" % song[: len(song) - 4], values=(i + 1))
+            table.insert("", i, text="%s" % song, values=(i + 1))
 
     def download(self):
         """ Download the song to the path and covert to mp3 if necessary """
         dpath = self.path + "%(title)s.%(ext)s"
         ydl_opts = {
-                'format': 'bestaudio/best',
+                'format': 'bestvideo[ext=mp4]+bestaudio[ext=mp4]/mp4',
                 'outtmpl': dpath,
+                'keepvideo': True,
                 'postprocessors':[{
                     'key': 'FFmpegExtractAudio',
                     'preferredcodec': 'mp3',

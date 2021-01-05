@@ -1,8 +1,11 @@
+#!/usr/bin/env python3.6
 globaltheme = None
+import json
+import os
+import pygame
+import mpv
 
 def theme(_theme: str) -> dict:
-    import json
-    import os
     global globaltheme 
     globaltheme = _theme
 
@@ -11,7 +14,18 @@ def theme(_theme: str) -> dict:
         colors = json.loads(f.read())
     return colors["colors"][0]
 
-def tStyle()-> 'ttk.Style()':
+def playVideo(path):
+    try:
+        player = mpv.MPV()
+        player.play(path)
+        player.wait_for_playback()
+        player.terminate()
+    except mpv.ShutdownError:
+        player.terminate()
+        del player
+
+
+def tStyle() -> 'ttk.Style()':
     from tkinter import ttk 
     palette = theme(globaltheme) 
 
@@ -27,6 +41,7 @@ def tStyle()-> 'ttk.Style()':
         fieldbackground=palette["bgcolor"],
         font=("ARCADECLASSIC", 10),
     )
+
 
     # Selected song highlight colors
     style.map("Treeview", background=[("selected", palette["highlightedsongbg"])])
@@ -53,5 +68,18 @@ def tStyle()-> 'ttk.Style()':
     style.map("Treeview.Heading", background=[("selected", palette["bgcolor"])])
     style.map("Treeview.Heading", foreground=[("selected", palette["textcolor"])])
 
-    return style
+    ######## Tabs Styling ########  
+    style.configure("TNotebook", 
+            background=palette['bgcolor'],
+            foreground=palette['bgcolor'],
+            borderwidth=0)
 
+    style.configure("TNotebook.Tab", font=("ARCADECLASSIC", 12))
+
+    style.configure("TNotebook.Tab", background=palette['bgcolor'],borderwidth=0)
+    style.configure("TNotebook.Tab", foreground=palette['buttonbg'],borderwidth=0)
+
+    style.map("TNotebook.Tab", background=[("selected", palette['highlightedsongbg'])])
+    style.map("TNotebook.Tab", foreground=[("selected", palette['highlightedsongfg'])])
+
+    return style
