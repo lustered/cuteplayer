@@ -259,7 +259,9 @@ class Cuteplayer(Frame):
         else: #if it's a video
 
             # Pause the current song if there's something playing.
-            self.after_cancel(self.timelineid)
+            if self.timelineid is not None:
+                self.after_cancel(self.timelineid)
+
             self.setbusy(True)
             mixer.music.pause()
 
