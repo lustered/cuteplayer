@@ -2,3 +2,4 @@ mutagen
 tk
 youtube-dl
 pygame==1.9.6
+mpv

@@ -1,8 +1,10 @@
 # Cuteplayer - A retro arcade music player
 
-### Simple and lightweight tk GUI to download and play youtube files in mp3 format
+### Simple and lightweight tk GUI to download and play youtube files in mp3 format or video
 
 ### Themes
+
+##### Pre-tabs pictures
 
 ![bliss](https://github.com/lustered/cuteplayer/blob/master/pics/blissTheme.png) ![rainy](https://github.com/lustered/cuteplayer/blob/master/pics/rainyTheme.png)
 
@@ -40,3 +42,8 @@
 ## Font:
 
     https://www.dafont.com/arcade-classic-2.font
+
+# Disclaimer
+
+    Please use this application responsibly. I do not condone the distribution nor profiting
+    of copyrighted content by using this application.
