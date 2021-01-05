@@ -259,15 +259,16 @@ class Cuteplayer(Frame):
         else: #if it's a video
 
             # Pause the current song if there's something playing.
+            self.after_cancel(self.timelineid)
+            self.setbusy(True)
             mixer.music.pause()
-
-            # Start a new thread with the video playing.
-            # This is needed to not lock up the tk frame and allows for multiple instances
-            # of videos.
 
             # Path to video
             pv = self.path + self.vtable.item(self.vtable.focus())['text']
 
+            # Start a new thread with the video playing.
+            # This is needed to not lock up the tk frame and allows for multiple instances
+            # of videos.
             vthread = Thread(target=lambda: playVideo(pv))
             vthread.start()
 
