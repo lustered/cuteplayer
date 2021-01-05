@@ -1,8 +1,6 @@
-#!/usr/bin/env python3.6
 globaltheme = None
 import json
 import os
-import pygame
 import mpv
 
 def theme(_theme: str) -> dict:
