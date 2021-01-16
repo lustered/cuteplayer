@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# This install script is awful
+
+# Build app executable
+function buildExecutable {
+
+    printf "\n\n[::Do you want to build the executable?::]\n"
+    select yn in "Yes" "No"; do
+        case $yn in
+            [Yy]* ) printf "\n\n[::Building executable::]\n" ; python3 setup.py build; break;;
+            [Nn]* ) exit;;
+        esac
+    done
+}
+
 function installFont {
     # Download font, remove unnecessary files
     printf "\n[::Downloading & Installing font::]\n"
@@ -60,13 +74,13 @@ function installRequirements {
             makepkg -si
             curl -O https://bootstrap.pypa.io/get-pip.py
             python3.6 get-pip.py
-            python3.6 -m pip install tk pygame==1.9.6 mutagen youtube-dl python-mpv==0.3.9
+            python3.6 -m pip install tk pygame==1.9.6 mutagen youtube-dl python-mpv==0.3.9 cx_freeze
 
         else
-            pip3 install tk pygame==1.9.6 mutagen youtube-dl 
+            pip3 install tk pygame==1.9.6 mutagen youtube-dl cx_freeze
         fi
     else
-        pip3 install tk pygame==1.9.6 mutagen youtube-dl 
+        pip3 install tk pygame==1.9.6 mutagen youtube-dl cx_freeze
     fi
 }
 
