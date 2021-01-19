@@ -17,7 +17,7 @@ cx_Freeze.setup(name = 'cuteplayer',
         options=options,
         version='1.0',
         author='Cluis',
-        description='An aesthetic retro punk music player',
+        description='An aesthetic retro arcade music player',
         executables=executables
 
         )
