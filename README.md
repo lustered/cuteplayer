@@ -6,9 +6,9 @@
 
 ##### Pre-tabs pictures
 
-![bliss](https://github.com/lustered/cuteplayer/blob/master/pics/blissTheme.png) ![rainy](https://github.com/lustered/cuteplayer/blob/master/pics/rainyTheme.png)
+![bliss](https://github.com/lustered/cuteplayer/blob/master/pics/BlissVid.png) ![rainy](https://github.com/lustered/cuteplayer/blob/master/pics/RainyVid.png)
 
-![pastel](https://github.com/lustered/cuteplayer/blob/master/pics/pastelTheme.png) ![flame](https://github.com/lustered/cuteplayer/blob/master/pics/flameTheme.png)
+![pastel](https://github.com/lustered/cuteplayer/blob/master/pics/PastelVid.png) ![flame](https://github.com/lustered/cuteplayer/blob/master/pics/FlameVid.png)
 
 ## Install | Quite crappy install script
 
