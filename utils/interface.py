@@ -83,7 +83,7 @@ class Cuteplayer(Frame):
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
             activebackground=self.palette['activebuttonbg'],
-            command=lambda: [self.master.destroy()]
+            command=lambda: [mixer.quit(), self.master.destroy()]
         )
 
         self.dl = Button(
@@ -444,6 +444,7 @@ class Cuteplayer(Frame):
         self.mp3_songs.sort()
         self.videos.sort()
 
+        # Assign the correct tab/table elements
         tab, table = (self.mp3_songs,self.table) if self.menu.index(self.menu.select()) == 0 \
                     else (self.videos, self.vtable)
 
