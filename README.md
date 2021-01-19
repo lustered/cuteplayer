@@ -4,8 +4,6 @@
 
 ### Themes
 
-##### Pre-tabs pictures
-
 ![bliss](https://github.com/lustered/cuteplayer/blob/master/pics/BlissVid.png) ![rainy](https://github.com/lustered/cuteplayer/blob/master/pics/RainyVid.png)
 
 ![pastel](https://github.com/lustered/cuteplayer/blob/master/pics/PastelVid.png) ![flame](https://github.com/lustered/cuteplayer/blob/master/pics/FlameVid.png)
