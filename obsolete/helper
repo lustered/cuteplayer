@@ -1,1 +1,1 @@
-youtube-dl --extract-audio --audio-format mp3 -o ~/Music/simpledl/%(title)s.%(ext)s https://www.youtube.com/watch?v=-wv3ZUCy1Rg
+youtube-dl --extract-audio --audio-format mp3 -o ~/Music/simpledl/%(title)s.%(ext)s 'https://www.youtube.com/watch?v=-wv3ZUCy1Rg'
