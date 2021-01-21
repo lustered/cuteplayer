@@ -11,6 +11,7 @@
 ## Install | Quite crappy install script
 
 It will install python3.6 for arch systems since most likely 3.9+ will be installed.
+
 If you don't want it to, just make sure you have a python3 < 3.9 version and install the requirements
 
 Ubuntu-based: mpv version can be a hassle. Make sure you install the latest mpv(repo)/libmpv and python-mpv=0.3.9
