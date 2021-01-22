@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/env bash
 
 # This install script is awful
 
@@ -44,7 +44,7 @@ function installEntry {
         echo  "[Desktop Entry]
 Version=1.0
 Name=cuteplayer
-Comment=Cute music player to download music 
+Comment=Retro arcade, aesthetic music player
 Exec=${dir}/cuteplayer.py
 Icon=${dir}/pics/cato.ico
 Path=${dir}
@@ -91,3 +91,4 @@ dir=`pwd`
 installRequirements
 installFont
 installEntry
+buildExecutable
