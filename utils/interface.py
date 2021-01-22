@@ -82,6 +82,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
+            borderwidth=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.quit(), self.master.destroy()]
         )
@@ -94,6 +95,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
+            borderwidth=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: Thread(target=self.download).start() # Run a new thread
         )  
@@ -106,6 +108,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
+            borderwidth=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.music.unpause(), self.setbusy(False), self.updateTimeline()] 
         )
@@ -118,6 +121,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
+            borderwidth=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.music.pause(), self.setbusy(True), self.after_cancel(self.timelineid)]
         )
@@ -129,6 +133,7 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightthickness=3,
+            borderwidth=5,
             highlightbackground=self.palette['bgcolor'],
             activebackground=self.palette['activebuttonbg'],
             command=self._shuffle,
@@ -142,6 +147,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
+            borderwidth=5,
             activebackground=self.palette['activebuttonbg'],
             command=self.skip,
         )
