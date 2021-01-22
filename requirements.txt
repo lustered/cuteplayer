@@ -2,5 +2,4 @@ mutagen
 tk
 youtube-dl
 pygame==1.9.6
-python-mpv==0.3.9
 cx_freeze
