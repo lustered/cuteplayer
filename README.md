@@ -15,11 +15,11 @@
 Download python3.7.9 from python.org
 IMPORTANT! During the installation, make sure to add python to your PATH variables - 
 
-[64bit installer!](https://www.python.org/ftp/python/3.8.6/python-3.8.6rc1-amd64.exe)
+[64bit installer](https://www.python.org/ftp/python/3.8.6/python-3.8.6rc1-amd64.exe)
 
 Navigate to the cuteplayer directory wherever it was downloaded using a terminal emulator(Eg. cmd)
 
-    pip3 install -r requirements.txt
+    pip install -r requirements.txt
     python setup build
 
 
