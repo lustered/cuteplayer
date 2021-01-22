@@ -3,3 +3,5 @@ tk
 youtube-dl
 pygame==1.9.6
 cx_freeze
+ffmpeg-python
+ffprobe-python
