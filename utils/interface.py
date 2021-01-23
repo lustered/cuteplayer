@@ -14,7 +14,6 @@ from subprocess import *
 import youtube_dl
 from .utils import theme, tStyle, playVideo
 
-
 class Cuteplayer(Frame):
 
     # Path stuff

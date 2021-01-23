@@ -1,5 +1,5 @@
 from utils.interface import *
-import sys
+sys.path.append('DLLs')
 
 if __name__ == "__main__":
     ROOT = Tk()
