@@ -57,7 +57,7 @@ class Cuteplayer(Frame):
 
     def windowSettings(self, master):
         """Set the main window settings"""
-        self.master.geometry("330x560")
+        self.master.geometry("330x565")
         self.master.title("cuteplayer")
         self.master.configure(bg=self.palette["bgcolor"])
         self.master.resizable(False, False)
@@ -82,7 +82,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
-            borderwidth=5,
+            bd=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.quit(), self.master.destroy()]
         )
@@ -95,7 +95,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
-            borderwidth=5,
+            bd=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: Thread(target=self.download).start() # Run a new thread
         )  
@@ -108,7 +108,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
-            borderwidth=5,
+            bd=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.music.unpause(), self.setbusy(False), self.updateTimeline()] 
         )
@@ -121,7 +121,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
-            borderwidth=5,
+            bd=5,
             activebackground=self.palette['activebuttonbg'],
             command=lambda: [mixer.music.pause(), self.setbusy(True), self.after_cancel(self.timelineid)]
         )
@@ -133,7 +133,7 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightthickness=3,
-            borderwidth=5,
+            bd=5,
             highlightbackground=self.palette['bgcolor'],
             activebackground=self.palette['activebuttonbg'],
             command=self._shuffle,
@@ -147,7 +147,7 @@ class Cuteplayer(Frame):
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette['bgcolor'],
             highlightthickness=3,
-            borderwidth=5,
+            bd=5,
             activebackground=self.palette['activebuttonbg'],
             command=self.skip,
         )
@@ -184,6 +184,7 @@ class Cuteplayer(Frame):
 
         self.timeline = Scale(
             self,
+            takefocus=0,
             length=100,
             font="ARCADECLASSIC",
             orient="horizontal",
@@ -198,8 +199,15 @@ class Cuteplayer(Frame):
             borderwidth=0,
         )
 
-        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.timelineid))
-        self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
+        # self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.timelineid))
+
+        # Disabled as of right now until I can fix mixer/SDL crashing 
+        # Explanation:
+        # queu checks if the song is over to skip onto the next one
+        # This check is done with mixer.sound.get_busy returning -1
+        # When setting the timeline a few times, the mixer seems to hang and return -1
+
+        #self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
         ############################## End ##############################
 
         ############################# Packing ##############################
@@ -369,10 +377,10 @@ class Cuteplayer(Frame):
 
         # Column config
         self.table.column("songNumber", width=-50)
-        self.table.heading("songNumber", text="☪ ")
+        self.table.heading("songNumber", text=" ")
 
         self.vtable.column("songNumber", width=-50)
-        self.vtable.heading("songNumber", text="☪ ")
+        self.vtable.heading("songNumber", text=" ")
 
         self.menu.add(self.table,text='mp3')
         self.menu.add(self.vtable,text='videos')

@@ -22,9 +22,8 @@ And install the font from here
 
 Navigate to the cuteplayer directory wherever it was downloaded using a terminal emulator(Eg. cmd)
 
-    pip install -r requirements.txt
+    pip install cx_Freeze
     python setup build
-
 
 The executable will be in the build directory
 
