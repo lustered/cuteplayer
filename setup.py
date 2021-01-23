@@ -10,8 +10,9 @@ base = None
 #    base = 'Win32GUI'
 
 options = {'build_exe':{"packages":['tkinter','ffmpeg', 'ffprobe'],
-            'include_files':['DLLs', 'pics','utils', 'themes'], 
+            'include_files':['mpv-1.dll', 'ffprobe.exe', 'ffmpeg.exe', 'DLLs', 'pics','utils', 'themes'], 
             }}
+
 executables = [cx_Freeze.Executable('cuteplayer.py', base=base, icon='pics/cato.ico')]
 
 cx_Freeze.setup(name = 'cuteplayer',
