@@ -13,17 +13,25 @@
 ### Install
 
 Download python3.7.9 from python.org
-IMPORTANT! During the installation, make sure to add python to your PATH variables  
 
-[64bit installer](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)
+IMPORTANT! During the installation, make sure to add python to your PATH variables [Python 64bit installer](https://www.python.org/ftp/python/3.7.9/python-3.7.9-amd64.exe)
 
-And install the font from here 
-[Arcade Classic font](https://dl.dafont.com/dl/?f=arcade_classic_2)
+And install the font from here [Arcade Classic font](https://dl.dafont.com/dl/?f=arcade_classic_2)
+
+## Executable installer
+
+Simple [cuteplayer 64bit installer](https://github.com/lustered/cuteplayer/releases/download/1.0/cuteplayer-1.0-amd64.msi) from the releases 
+
+## Build form source
 
 Navigate to the cuteplayer directory wherever it was downloaded using a terminal emulator(Eg. cmd)
 
     pip install cx_Freeze
     python setup build
+
+## Alternatively, just run it using python3
+
+    python cuteplayer.py
 
 The executable will be in the build directory
 

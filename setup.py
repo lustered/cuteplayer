@@ -35,13 +35,13 @@ bdist_msi_options = {
         'data': msi_data,
         'add_to_path': True,
         'dist_dir': 'cuteplayer-installer',
-        #'initial_target_dir': r'[DesktopFolder]\Cuteplayer',
-        #'initial_target_dir': r'[Program\ Files]\cuteplayer',
-        #'directories': (cuteplayerFolder),
+        'initial_target_dir': r'[ProgramFilesFolder]\cuteplayer',
         }
 
-options = {"packages":['tkinter'],
-            'include_files':['mpv-1.dll', 'DLLs', 'pics','utils', 'themes', 'ARCADECLASSIC.TTF'], 
+options = { 'packages':['tkinter'],
+            'includes': [],
+            'excludes': [],
+            'include_files':['mpv-1.dll', 'ffprobe.exe', 'ffmpeg.exe', 'DLLs', 'pics', 'utils', 'themes', 'ARCADECLASSIC.TTF'], 
             }
 
 executables = [cx_Freeze.Executable('cuteplayer.py', base=base, icon='pics/cato.ico')]

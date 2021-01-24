@@ -40,7 +40,7 @@ class Cuteplayer(Frame):
     def __init__(self, master, _theme="pastel"):
         super().__init__(master)
         # update youtube-dl on start
-        uthread = Thread(target=lambda: os.system("pip3 install --upgrade youtube-dl"))
+        uthread = Thread(target=lambda: [os.system("pip install --upgrade youtube-dl")])
         uthread.start()
 
         self.palette = theme(_theme)
