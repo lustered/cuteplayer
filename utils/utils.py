@@ -36,6 +36,7 @@ def tStyle() -> 'ttk.Style()':
 
     ####################### STYLE #######################
     style = ttk.Style()
+    style.theme_use('default')
 
     ######## Treeview Styling
     style.configure(
