@@ -1,23 +1,23 @@
-#!/usr/bin/env python3.6
 import cx_Freeze
-import sys 
-import matplotlib
+import pip
 
-base = None
+pip_packages = ["mutagen", "tk", "pygame==1.9.6", "youtube-dl", "cx_freeze"]
+pip.main(["install", *pip_packages])
 
-if sys.platform == 'win32':
-    base = 'Win32GUI'
+options = {
+    "packages": ["tkinter"],
+    "includes": [],
+    "excludes": [],
+    "include_files": ["utils", "themes"],
+}
 
-options = {'build_exe':{"packages":['tkinter'],
-            'include_files':['pics','utils', 'themes']}}
+executables = [cx_Freeze.Executable("cuteplayer.py", base=None, icon=r"pics/cato.ico")]
 
-executables = [cx_Freeze.Executable('cuteplayer.py', base=base, icon='pics/cato.ico')]
-
-cx_Freeze.setup(name = 'cuteplayer',
-        options=options,
-        version='1.0',
-        author='Cluis',
-        description='An aesthetic retro arcade music player',
-        executables=executables
-
-        )
+cx_Freeze.setup(
+    name="cuteplayer",
+    options={"build_exe": options},
+    version="1.0",
+    author="https://github.com/lustered",
+    description="An aesthetic retro arcade music player",
+    executables=executables,
+)
