@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 from utils.interface import *
-import sys
 
 if __name__ == "__main__":
 

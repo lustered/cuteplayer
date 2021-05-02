@@ -7,8 +7,6 @@ def theme(_theme: str) -> dict:
     global globaltheme 
     globaltheme = _theme
 
-    # path = os.path.realpath(__file__)[:-14] + "themes/" + _theme + '.json'
-    # with open(path) as f:
     with open('themes/'+ _theme + ".json") as f:
         colors = json.loads(f.read())
     return colors["colors"][0]

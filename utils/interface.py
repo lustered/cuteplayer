@@ -30,10 +30,12 @@ class Cuteplayer(Frame):
     # Current actual playlist Eg. Shuffle/Normal orders
     playlist    = []
     videos      = []
+    themes      = ["bliss", "pastel", "rainy", "flame"]
+    ctheme      = None
     currentSong = None
     timelineid  = None
     queid       = None
-    vol         = 50
+    vol         = 0.5
     sample_rate = 48000
     crtime      = 0
     busy        = None
@@ -45,8 +47,9 @@ class Cuteplayer(Frame):
         uthread.start()
 
         self.palette = theme(_theme)
+        self.ctheme = _theme
         self.master = master
-        self.windowSettings(master)
+        self.windowSettings()
         self.mainMenu()
         mixer.pre_init(self.sample_rate, -16, 0)
         self.music_settings()
@@ -55,7 +58,7 @@ class Cuteplayer(Frame):
         self.updateTimeline()
         self.pack()
 
-    def windowSettings(self, master):
+    def windowSettings(self):
         """Set the main window settings"""
         self.master.geometry("330x560")
         self.master.title("cuteplayer")
@@ -70,7 +73,8 @@ class Cuteplayer(Frame):
             fg=self.palette["entrytext"],
             background=self.palette["entrybg"],
             font=("ARCADECLASSIC", 15),
-            highlightbackground=self.palette["bgcolor"], bd=3,
+            highlightbackground=self.palette["bgcolor"],
+            bd=3,
             highlightthickness=0,
         )
 
@@ -80,10 +84,10 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            highlightbackground=self.palette['bgcolor'],
+            highlightbackground=self.palette["bgcolor"],
             highlightthickness=3,
-            activebackground=self.palette['activebuttonbg'],
-            command=lambda: [mixer.quit(), self.master.destroy()]
+            activebackground=self.palette["activebuttonbg"],
+            command=lambda: [mixer.quit(), self.master.destroy()],
         )
 
         self.dl = Button(
@@ -92,11 +96,11 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            highlightbackground=self.palette['bgcolor'],
+            highlightbackground=self.palette["bgcolor"],
             highlightthickness=3,
-            activebackground=self.palette['activebuttonbg'],
-            command=lambda: Thread(target=self.download).start() # Run a new thread
-        )  
+            activebackground=self.palette["activebuttonbg"],
+            command=lambda: Thread(target=self.download).start(),  # Run a new thread
+        )
 
         self.play = Button(
             self,
@@ -104,10 +108,14 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            highlightbackground=self.palette['bgcolor'],
+            highlightbackground=self.palette["bgcolor"],
             highlightthickness=3,
-            activebackground=self.palette['activebuttonbg'],
-            command=lambda: [mixer.music.unpause(), self.setbusy(False), self.updateTimeline()] 
+            activebackground=self.palette["activebuttonbg"],
+            command=lambda: [
+                mixer.music.unpause(),
+                self.setbusy(False),
+                self.updateTimeline(),
+            ],
         )
 
         self.pause = Button(
@@ -116,10 +124,14 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            highlightbackground=self.palette['bgcolor'],
+            highlightbackground=self.palette["bgcolor"],
             highlightthickness=3,
-            activebackground=self.palette['activebuttonbg'],
-            command=lambda: [mixer.music.pause(), self.setbusy(True), self.after_cancel(self.timelineid)]
+            activebackground=self.palette["activebuttonbg"],
+            command=lambda: [
+                mixer.music.pause(),
+                self.setbusy(True),
+                self.after_cancel(self.timelineid),
+            ],
         )
 
         self.shuffleSongList = Button(
@@ -129,8 +141,8 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightthickness=3,
-            highlightbackground=self.palette['bgcolor'],
-            activebackground=self.palette['activebuttonbg'],
+            highlightbackground=self.palette["bgcolor"],
+            activebackground=self.palette["activebuttonbg"],
             command=self._shuffle,
         )
 
@@ -140,9 +152,9 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            highlightbackground=self.palette['bgcolor'],
+            highlightbackground=self.palette["bgcolor"],
             highlightthickness=3,
-            activebackground=self.palette['activebuttonbg'],
+            activebackground=self.palette["activebuttonbg"],
             command=self.skip,
         )
 
@@ -167,12 +179,12 @@ class Cuteplayer(Frame):
             highlightthickness=10,
             highlightbackground=self.palette["bgcolor"],
             troughcolor=self.palette["volumetroughcolor"],
-            activebackground=self.palette['bgcolor'],
-            borderwidth=0
+            activebackground=self.palette["bgcolor"],
+            borderwidth=0,
         )
 
         # Set the default value to 50% volume
-        self.VolumeSlider.set(self.vol)
+        self.VolumeSlider.set(self.vol * 100)
 
         self.VolumeSlider.configure(label="%60s" % ("volume"))
 
@@ -188,16 +200,20 @@ class Cuteplayer(Frame):
             highlightbackground=self.palette["bgcolor"],
             troughcolor=self.palette["timelinetroughcolor"],
             label="  ",
-            activebackground=self.palette['bgcolor'],
+            activebackground=self.palette["bgcolor"],
             borderwidth=0,
         )
 
-        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.timelineid))
+        self.timeline.bind(
+            "<Button-1>", lambda event: self.after_cancel(self.timelineid)
+        )
         self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
         ############################## End ##############################
 
         ############################# Packing ##############################
-        self.entry.grid(row=0, column=0, columnspan=3, sticky=W + E + N + S)#, padx=3, pady=3)
+        self.entry.grid(
+            row=0, column=0, columnspan=3, sticky=W + E + N + S
+        )  # , padx=3, pady=3)
 
         self.dl.grid(row=1, column=0, sticky=NSEW)
         self.quit.grid(row=1, column=1, sticky=NSEW)
@@ -211,7 +227,28 @@ class Cuteplayer(Frame):
         self.CurSong.grid(row=6, column=0, columnspan=2, sticky=NSEW)
         self.timeline.grid(row=7, column=0, columnspan=3, sticky=NSEW)
         self.VolumeSlider.grid(row=8, column=0, columnspan=3, sticky=NSEW)
-    ############################## END ##############################
+        ############################## END ##############################
+
+        ############################### Keybindings ###############################
+        self.timeline.bind_all("t", self.nextTheme)
+
+    ##############################################################
+
+    def nextTheme(self, event):
+        print("Changing theme")
+        try:
+            self.ctheme = self.themes[self.themes.index(self.ctheme) + 1]
+        except:
+            self.ctheme = self.themes[0]
+
+        self.palette = theme(self.ctheme)
+        print("New theme: ", self.ctheme)
+
+        # Redraw all the widgets and frame to apply the new palette
+        self.windowSettings()
+        self.mainMenu()
+        self.songsTable()
+        self.updateTable()
 
     def setbusy(self, state):
         """ Set current state """
@@ -246,7 +283,7 @@ class Cuteplayer(Frame):
                 # Remove the selection dashed lines after the focus redraws
                 # self.master.focus_set()
 
-                self.currentSong = self.path + self.table.item(curItem)["text"] 
+                self.currentSong = self.path + self.table.item(curItem)["text"]
 
                 # Override playlist if the user manually selects a song from the table
                 # This is needed as the _shuffle function rearranges the order
@@ -256,7 +293,7 @@ class Cuteplayer(Frame):
                 sleep(1)
                 self.updatenplay()
 
-        else: #if it's a video
+        else:  # if it's a video
 
             # Pause the current song if there's something playing.
             if self.timelineid is not None:
@@ -266,7 +303,7 @@ class Cuteplayer(Frame):
             mixer.music.pause()
 
             # Path to video
-            pv = self.path + self.vtable.item(self.vtable.focus())['text']
+            pv = self.path + self.vtable.item(self.vtable.focus())["text"]
 
             # Start a new thread with the video playing.
             # This is needed to not lock up the tk frame and allows for multiple instances
@@ -288,13 +325,12 @@ class Cuteplayer(Frame):
         except mutagen.MutagenError:
             pass
 
-
         # Re-init settings
         try:
             self.music_settings()
             mixer.music.load(self.currentSong)
             mixer.music.play()
-            
+
             # Only show up to 30 characters to avoid line wrap
             self.CurSong.configure(text=str(self.currentSong[len(self.path) : -4])[:30])
             self.setbusy(False)
@@ -313,7 +349,6 @@ class Cuteplayer(Frame):
         except pygame.error:
             print("Some pygame error I can't fix")
             pass
-
 
     def music_settings(self):
         """ Reset sample rate since it may vary from each song """
@@ -368,8 +403,8 @@ class Cuteplayer(Frame):
         self.vtable.column("songNumber", width=-50)
         self.vtable.heading("songNumber", text="☪ ")
 
-        self.menu.add(self.table,text='mp3')
-        self.menu.add(self.vtable,text='videos')
+        self.menu.add(self.table, text="mp3")
+        self.menu.add(self.vtable, text="videos")
 
         self.menu.grid(
             row=3,
@@ -426,7 +461,7 @@ class Cuteplayer(Frame):
         if self.busy is False:
             self.timelineid = self.after(1000, self.updateTimeline)
 
-    def updateTable(self, _ = None):
+    def updateTable(self, _=None):
         """ Refresh the song table list """
         self.table.delete(*self.table.get_children())
         self.vtable.delete(*self.vtable.get_children())
@@ -436,8 +471,8 @@ class Cuteplayer(Frame):
             if fnmatch.fnmatch(entry, "*.mp3") and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
 
-            # if fnmatch.fnmatch(entry, "*.mkv") and entry not in self.videos: 
-            if entry.endswith(('.mkv','.mp4')) and entry not in self.videos:
+            # if fnmatch.fnmatch(entry, "*.mkv") and entry not in self.videos:
+            if entry.endswith((".mkv", ".mp4")) and entry not in self.videos:
                 self.videos.append(entry)
 
         # add new song to table list
@@ -445,8 +480,11 @@ class Cuteplayer(Frame):
         self.videos.sort()
 
         # Assign the correct tab/table elements
-        tab, table = (self.mp3_songs,self.table) if self.menu.index(self.menu.select()) == 0 \
-                    else (self.videos, self.vtable)
+        tab, table = (
+            (self.mp3_songs, self.table)
+            if self.menu.index(self.menu.select()) == 0
+            else (self.videos, self.vtable)
+        )
 
         for i, song in enumerate(tab):
             # table.insert("", i, text="%s" % song[: len(song) - 4], values=(i + 1))
@@ -456,15 +494,17 @@ class Cuteplayer(Frame):
         """ Download the song to the path and covert to mp3 if necessary """
         dpath = self.path + "%(title)s.%(ext)s"
         ydl_opts = {
-                'format': 'bestvideo[ext=mp4]+bestaudio[ext=mp4]/mp4',
-                'outtmpl': dpath,
-                'keepvideo': True,
-                'postprocessors':[{
-                    'key': 'FFmpegExtractAudio',
-                    'preferredcodec': 'mp3',
-                    'preferredquality': '192',
-                    }],
+            "format": "bestvideo[ext=mp4]+bestaudio[ext=mp4]/mp4",
+            "outtmpl": dpath,
+            "keepvideo": True,
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": "192",
                 }
+            ],
+        }
 
         with youtube_dl.YoutubeDL(ydl_opts) as ydl:
             print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
