@@ -7,7 +7,7 @@ import cx_Freeze
 
 options = {
     "packages": ["tkinter"],
-    "includes": [],
+    "includes": ['pip'],
     "excludes": [],
     "include_files": ["utils", "themes"],
 }
