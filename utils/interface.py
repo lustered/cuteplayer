@@ -242,7 +242,27 @@ class Cuteplayer(Frame):
         ############################## END ##############################
 
         ############################### Keybindings ###############################
+        self.timeline.bind(
+            "<Button-1>", lambda event: self.after_cancel(self.timelineid)
+        )
+        self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
         self.timeline.bind_all("t", self.nextTheme)
+        self.timeline.bind_all("p", self.togglePlay)
+        self.timeline.bind_all("n", self.skip)
+        self.timeline.bind_all("s", self._shuffle)
+        self.timeline.bind_all("d", self.download)
+        self.timeline.bind_all("q", lambda x: [mixer.quit(), self.master.destroy()])
+
+    def togglePlay(self, event=None):
+        """ Toggle pause and play """
+        if self.busy:
+            mixer.music.unpause()
+            self.setbusy(False)
+            self.updateTimeline()
+        else:
+            mixer.music.pause()
+            self.setbusy(True)
+            self.after_cancel(self.timelineid)
 
     def nextTheme(self, event):
         print("Changing theme")
@@ -268,7 +288,7 @@ class Cuteplayer(Frame):
         self.vol = int(vol) / 100
         mixer.music.set_volume(self.vol)
 
-    def skip(self):
+    def skip(self, event = None):
         """ Play the next song in the playlist """
         if not self.currentSong:
             return
@@ -367,7 +387,7 @@ class Cuteplayer(Frame):
         mixer.init(self.sample_rate)
         mixer.music.set_volume(self.vol)
 
-    def _shuffle(self):
+    def _shuffle(self, event = None):
         """ Shuffle all current songs in the download directory and play them """
         if self.queid is not None:
             self.after_cancel(self.queid)
@@ -500,7 +520,7 @@ class Cuteplayer(Frame):
             # table.insert("", i, text="%s" % song[: len(song) - 4], values=(i + 1))
             table.insert("", i, text="%s" % song, values=(i + 1))
 
-    def download(self):
+    def download(self, event = None):
         """ Download the song to the path and covert to mp3 if necessary """
         dpath = self.path + "%(title)s.%(ext)s"
         ydl_opts = {
