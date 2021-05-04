@@ -30,4 +30,5 @@ jobs:
 
       # Runs a set of commands using the runners shell
       - name: Build app
+        run: pip install requirements.txt
         run: python setup.py build
