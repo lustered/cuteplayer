@@ -1,6 +1,6 @@
-mutagen
-tk
-youtube-dl
+mutagen==1.45.1
+tk==0.1.0
+youtube-dl==2021.4.26
 pygame==1.9.6
 python-mpv==0.3.9
-cx_freeze
+cx-Freeze==6.5.1
