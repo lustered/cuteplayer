@@ -35,7 +35,7 @@ class Cuteplayer(Frame):
     currentSong = None
     timelineid = None
     queid = None
-    vol = 0.1
+    vol = 0.4
     sample_rate = 48000
     crtime = 0
     busy = None
