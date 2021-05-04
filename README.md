@@ -1,3 +1,5 @@
+[![Build Status](https://api.travis-ci.org/lustered/cuteplayer.png?branch=master)](https://travis-ci.org/lustered/cuteplayer)
+
 # Cuteplayer - A retro arcade music player
 
 ### Simple and lightweight tk GUI to download and play youtube files in mp3 format or video
