@@ -1,0 +1,7 @@
+language: python
+python:
+  - "3.6"
+install:
+  - python3 -m pip install -r requirements
+script:
+  - python3 setup.py build
