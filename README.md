@@ -1,3 +1,5 @@
+![Passing](https://circleci.com/gh/lustered/cuteplayer.png?circle-token=:circle-token)
+
 # Cuteplayer - A retro arcade music player
 
 ### Simple and lightweight tk GUI to download and play youtube files in mp3 format or video
