@@ -18,13 +18,6 @@ Ubuntu-based: mpv version can be a hassle. Make sure you install the latest mpv(
 
     ./install
 
-## Mac
-
-- 3.6 < Python3 < 3.8 from python.org. The brew package has issues with tcl-tk
-- youtube-dl env setup can be a pain
-
-  ./install
-
 ## Windows
 
 You can follow the Windows release in the
