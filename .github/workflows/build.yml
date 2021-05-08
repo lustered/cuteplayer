@@ -14,6 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   LinuxBuild:
+    name: Build for Linux
     runs-on: ubuntu-latest
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -73,11 +74,13 @@ jobs:
       - name: Archive build files
         uses: actions/upload-artifact@v2
         with:
-          name: Windows Build Files
-          path: build
+          name: Windows Installer
+          path: cuteplayer-installer/cuteplayer-x86-64-executable-installer
 
       - name: Display directory
         run: ls
+
+      -
 
   # Download:
   #   name: Download artifacts
