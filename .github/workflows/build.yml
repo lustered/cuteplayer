@@ -33,16 +33,6 @@ jobs:
           python3 -m pip install -r requirements.txt
           python3 setup.py build
 
-      - name: Push to releases
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build/
-          asset_name: ${{ matrix.asset_name }}
-          tag: ${{ github.ref }}
-          overwrite: true
-          body: "Latest"
-
         # Upload build files
       - name: Archive build files
         uses: actions/upload-artifact@v2
@@ -85,7 +75,7 @@ jobs:
           asset_name: ${{ matrix.asset_name }}
           tag: ${{ github.ref }}
           overwrite: true
-          # body: "Latest Windowsx64 installer"
+          body: "Latest"
 
         # Upload build files
       - name: Archive build files
