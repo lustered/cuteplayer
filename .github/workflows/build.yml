@@ -90,11 +90,10 @@ jobs:
 
   Download:
     name: Download artifacts
-    needs: [LinuxBuild, WindowsBuild]
     runs-on: ubuntu-latest
     steps:
       - name: Download build files
         uses: actions/download-artifact@v2
         with:
           name: Build and Windows Installer
-          path: [build]
+          path: build
