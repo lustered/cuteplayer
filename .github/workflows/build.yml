@@ -74,7 +74,7 @@ jobs:
         # if: github.ref == 'refs/heads/WindowsBuild'
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
-            python3 setup bdist_msi
+            python3 setup.py bdist_msi
           fi
         shell: bash
 
@@ -88,12 +88,12 @@ jobs:
       - name: Display directory
         run: ls
 
-  Download:
-    name: Download artifacts
-    runs-on: ubuntu-latest
-    steps:
-      - name: Download build files
-        uses: actions/download-artifact@v2
-        with:
-          name: Build and Windows Installer
-          path: build
+  # Download:
+  #   name: Download artifacts
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Download build files
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: Build and Windows Installer
+  #         path: build
