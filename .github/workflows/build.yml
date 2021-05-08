@@ -44,7 +44,7 @@ jobs:
           path: build
 
       - name: Display directory
-        run: ls
+        run: tree
 
   WindowsBuild:
     name: Build for Windows
@@ -78,7 +78,7 @@ jobs:
           path: cuteplayer-installer/cuteplayer-x86-64-executable-installer
 
       - name: Display directory
-        run: ls
+        run: tree
 
   # Download:
   #   name: Download artifacts
