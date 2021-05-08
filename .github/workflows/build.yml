@@ -46,7 +46,7 @@ jobs:
         run: python3 setup bdist_msi
 
   Archive:
-    - name: Archive artifacts
+    - name: Upload artifacts
       needs: Build
       runs-on: ubuntu-latest
       steps:
