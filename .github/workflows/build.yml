@@ -45,3 +45,11 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Build app
         run: python3 setup.py build
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+
+      - name: Display directory
+        run: ls
