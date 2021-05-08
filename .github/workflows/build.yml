@@ -57,11 +57,6 @@ jobs:
   WindowsBuild:
     name: Build for Windows
     runs-on: windows-latest
-    strategy:
-      matrix:
-        python-version: [3.6]
-        os: windows-latest
-
     steps:
       - uses: actions/checkout@v2
 
