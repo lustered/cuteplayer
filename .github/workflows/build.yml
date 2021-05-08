@@ -1,6 +1,5 @@
 name: CI
 
-# Controls when the action will run.
 on:
   # Triggers the workflow on push or pull request events but only for the master branch
   push:
@@ -40,7 +39,7 @@ jobs:
       - name: Archive build files
         uses: actions/upload-artifact@v2
         with:
-          name: Build Files
+          name: Linux build Files
           path: build
 
       - name: Display directory
@@ -75,17 +74,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Windows Installer
-          path: cuteplayer-installer/cuteplayer-x86-64-executable-installer
+          path: cuteplayer-installer
 
       - name: Display directory
         run: tree
-
-  # Download:
-  #   name: Download artifacts
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Download build files
-  #       uses: actions/download-artifact@v2
-  #       with:
-  #         name: Build and Windows Installer
-  #         path: build
