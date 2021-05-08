@@ -13,16 +13,13 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "Build"
   LinuxBuild:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: [3.6]
-        os: [windows-latest, ubuntu-latest]
+    # strategy:
+    #   matrix:
+    #     python-version: [3.6]
+    #     os: [windows-latest, ubuntu-latest]
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -34,15 +31,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
 
       - name: Build App
-        run: python3 setup.py build
-
-      - name: Create Windows Installer
-        if: github.ref == 'refs/heads/WindowsBuild'
-        run: python3 setup bdist_msi
+        run: |
+          python -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+          python3 setup.py build
 
         # Upload build files
       - name: Archive build files
@@ -57,7 +51,9 @@ jobs:
   WindowsBuild:
     name: Build for Windows
     runs-on: windows-latest
+    if: github.ref == 'refs/heads/WindowsBuild'
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
       - uses: actions/setup-python@v2
@@ -65,25 +61,21 @@ jobs:
           python-version: "3.6"
           architecture: "x64"
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-
       - name: Create Windows Installer
-        # if: github.ref == 'refs/heads/WindowsBuild'
         run: |
           if [ "$RUNNER_OS" == "Windows" ]; then
+            python -m pip install --upgrade pip
+            python3 -m pip install -r requirements.txt
             python3 setup.py bdist_msi
           fi
         shell: bash
 
         # Upload build files
-      # - name: Archive build files
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: Windows Build Files
-      #     path: build
+      - name: Archive build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: Windows Build Files
+          path: build
 
       - name: Display directory
         run: ls
