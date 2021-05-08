@@ -49,7 +49,8 @@ jobs:
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: build
+          name: Build Files
+          path: build
 
       - name: Display directory
         run: ls
