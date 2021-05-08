@@ -39,7 +39,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: cuteplayer-installer/cuteplayer-1.0-amd64.msi
+          file: build
           tag: ${{ github.ref }}
           overwrite: true
           body: "Latest linux x64 build"
