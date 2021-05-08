@@ -41,6 +41,7 @@ jobs:
       - name: Build app
         run: python3 setup.py build
 
+      - name: Create Windows Installer
         if: github.ref == 'refs/heads/WindowsBuild'
         run: python3 setup bdist_msi
 
@@ -67,4 +68,3 @@ jobs:
         with:
           name: Build
           path: build
-    
