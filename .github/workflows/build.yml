@@ -46,17 +46,17 @@ jobs:
         run: python3 setup bdist_msi
 
   Archive:
-    - name: Upload artifacts
-      needs: Build
-      runs-on: ubuntu-latest
-      steps:
-        - name: Archive build files
-          uses: actions/upload-artifact@v2
-          with:
-            name: Build Files
-            path: build
-        - name: Display directory
-          run: ls
+    name: Upload artifacts
+    needs: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Archive build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: Build Files
+          path: build
+      - name: Display directory
+        run: ls
 
   Download:
     name: Download artifacts
