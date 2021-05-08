@@ -75,7 +75,7 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: cuteplayer-installer/cuteplayer-1.0-amd64.msi
-          asset_name: Windows Installer
+          # asset_name: Windows Installer
           tag: ${{ github.ref }}
           overwrite: true
           body: "Latest build Windows x64 installer"

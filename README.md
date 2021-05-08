@@ -2,7 +2,7 @@
 
 # Cuteplayer - A retro arcade music player
 
-    Simple and lightweight tk GUI to download and play youtube files in mp3 format or video
+Simple and lightweight tk GUI to download and play youtube files in mp3 format or video
 
 ### Themes
 
