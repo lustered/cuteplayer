@@ -15,14 +15,11 @@ on:
 jobs:
   LinuxBuild:
     runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     python-version: [3.6]
-    #     os: [windows-latest, ubuntu-latest]
-
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          ref: master
 
       - uses: actions/setup-python@v2
         with:
@@ -51,10 +48,12 @@ jobs:
   WindowsBuild:
     name: Build for Windows
     runs-on: windows-latest
-    if: github.ref == 'refs/heads/WindowsBuild'
+    # if: github.ref == 'refs/heads/WindowsBuild'
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        with:
+          ref: WindowsBuild
 
       - uses: actions/setup-python@v2
         with:
