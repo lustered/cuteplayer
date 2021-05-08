@@ -54,9 +54,8 @@ jobs:
           with:
             name: Build Files
             path: build
-
-      - name: Display directory
-        run: ls
+        - name: Display directory
+          run: ls
 
   Download:
     name: Download artifacts
