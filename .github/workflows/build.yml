@@ -80,8 +80,6 @@ jobs:
       - name: Display directory
         run: ls
 
-      -
-
   # Download:
   #   name: Download artifacts
   #   runs-on: ubuntu-latest
