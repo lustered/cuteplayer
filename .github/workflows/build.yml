@@ -14,7 +14,7 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "Build"
-  Build:
+  LinuxBuild:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
     strategy:
@@ -37,34 +37,69 @@ jobs:
           python -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
 
-      # Runs a set of commands using the runners shell
-      - name: Build app
+      - name: Build App
         run: python3 setup.py build
 
       - name: Create Windows Installer
         if: github.ref == 'refs/heads/WindowsBuild'
         run: python3 setup bdist_msi
 
-  Archive:
-    name: Upload artifacts
-    needs: Build
-    runs-on: ubuntu-latest
-    steps:
+        # Upload build files
       - name: Archive build files
         uses: actions/upload-artifact@v2
         with:
           name: Build Files
           path: build
+
+      - name: Display directory
+        run: ls
+
+  WindowsBuild:
+    name: Build for Windows
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.6]
+        os: windows-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.6"
+          architecture: "x64"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Create Windows Installer
+        # if: github.ref == 'refs/heads/WindowsBuild'
+        run: |
+          if [ "$RUNNER_OS" == "Windows" ]; then
+            python3 setup bdist_msi
+          fi
+        shell: bash
+
+        # Upload build files
+      # - name: Archive build files
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: Windows Build Files
+      #     path: build
+
       - name: Display directory
         run: ls
 
   Download:
     name: Download artifacts
-    needs: Archive
+    needs: [LinuxBuild, WindowsBuild]
     runs-on: ubuntu-latest
     steps:
       - name: Download build files
         uses: actions/download-artifact@v2
         with:
-          name: Build
-          path: build
+          name: Build and Windows Installer
+          path: [build]
