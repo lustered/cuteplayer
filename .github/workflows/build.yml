@@ -1,7 +1,6 @@
 name: CI
 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: [master, WindowsBuild]
   pull_request:
@@ -10,7 +9,6 @@ on:
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   LinuxBuild:
     name: Build for Linux
@@ -39,10 +37,11 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build
+          file: build/
+          asset_name: ${{ matrix.asset_name }}
           tag: ${{ github.ref }}
           overwrite: true
-          body: "Latest linux x64 build"
+          body: "Latest"
 
         # Upload build files
       - name: Archive build files
@@ -83,10 +82,10 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: cuteplayer-installer/cuteplayer-1.0-amd64.msi
-          # asset_name: Windows Installer
+          asset_name: ${{ matrix.asset_name }}
           tag: ${{ github.ref }}
           overwrite: true
-          body: "Latest Windowsx64 installer"
+          # body: "Latest Windowsx64 installer"
 
         # Upload build files
       - name: Archive build files
