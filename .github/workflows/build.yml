@@ -68,8 +68,6 @@ jobs:
             python3 setup.py bdist_msi
           fi
 
-          gh release upload
-
         shell: bash
 
         # Upload build files
