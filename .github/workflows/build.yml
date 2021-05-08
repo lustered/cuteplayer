@@ -35,6 +35,15 @@ jobs:
           python3 -m pip install -r requirements.txt
           python3 setup.py build
 
+      - name: Push to releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: cuteplayer-installer/cuteplayer-1.0-amd64.msi
+          tag: ${{ github.ref }}
+          overwrite: true
+          body: "Latest linux x64 build"
+
         # Upload build files
       - name: Archive build files
         uses: actions/upload-artifact@v2
@@ -67,7 +76,6 @@ jobs:
             python3 -m pip install -r requirements.txt
             python3 setup.py bdist_msi
           fi
-
         shell: bash
 
       - name: Push to releases
@@ -78,7 +86,7 @@ jobs:
           # asset_name: Windows Installer
           tag: ${{ github.ref }}
           overwrite: true
-          body: "Latest build Windows x64 installer"
+          body: "Latest Windowsx64 installer"
 
         # Upload build files
       - name: Archive build files
