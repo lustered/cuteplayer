@@ -3,4 +3,4 @@ tk==0.1.0
 youtube-dl==2021.4.26
 pygame==1.9.6
 python-mpv==0.3.9
-cx-Freeze==6.5.1
+cx-Freeze==6.6
