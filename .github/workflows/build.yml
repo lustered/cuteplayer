@@ -43,10 +43,43 @@ jobs:
       - name: Display directory
         run: tree
 
+  MacBuild:
+    name: Build for MacOs
+    runs-on: macos-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          ref: master
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: "3.6"
+          architecture: "x64"
+
+      - name: Install dependencies
+        run: |
+
+      - name: Build App
+        run: |
+          python -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+          python3 setup.py build
+
+        # Upload build files
+      - name: Archive build files
+        uses: actions/upload-artifact@v2
+        with:
+          name: MacOs build Files
+          path: build
+
+      - name: Display directory
+        run: tree
+
   WindowsBuild:
     name: Build for Windows
     runs-on: windows-latest
-    # if: github.ref == 'refs/heads/WindowsBuild'
+    if: github.ref == 'refs/heads/WindowsBuild'
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
