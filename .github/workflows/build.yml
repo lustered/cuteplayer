@@ -78,7 +78,7 @@ jobs:
           path: build
 
       - name: Display directory
-        run: tree
+        run: ls
 
   WindowsBuild:
     name: Build for Windows
