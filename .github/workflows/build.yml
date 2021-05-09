@@ -1,4 +1,4 @@
-name: CI
+name: Build
 
 on:
   push:
@@ -13,6 +13,7 @@ jobs:
   LinuxBuild:
     name: Build for Linux
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -31,8 +32,6 @@ jobs:
 
       - name: Build App
         run: |
-          # python -m pip install --upgrade pip
-          # python3 -m pip install -r requirements.txt
           python3 setup.py build
 
         # Upload build files
@@ -48,6 +47,7 @@ jobs:
   MacBuild:
     name: Build for MacOs
     runs-on: macos-latest
+    # if: github.ref == 'refs/heads/MacOs' # Run on push from MacOs branch
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -66,8 +66,6 @@ jobs:
 
       - name: Build App
         run: |
-          # python -m pip install --upgrade pip
-          # python3 -m pip install -r requirements.txt
           python3 setup.py bdist_dmg
 
         # Upload build files
@@ -75,7 +73,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: MacOs build Files
-          path: build
+          path: build/cuteplayer-1.0.dmg
 
       - name: Display directory
         run: ls
