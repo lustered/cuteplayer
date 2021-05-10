@@ -1,4 +1,4 @@
-[![Build Status](https://api.travis-ci.org/lustered/cuteplayer.png?branch=master)](https://travis-ci.org/lustered/cuteplayer)
+[![Build Status](https://api.travis-ci.org/lustered/cuteplayer.png?branch=master)](https://travis-ci.org/lustered/cuteplayer) [![Builds](https://github.com/lustered/cuteplayer/actions/workflows/build.yml/badge.svg)](https://github.com/lustered/cuteplayer/actions/workflows/build.yml)
 
 # Cuteplayer - A retro arcade music player
 
