@@ -39,7 +39,6 @@ jobs:
         run: |
           python3 setup.py build
 
-        # Upload build files
       - name: Archive build files
         uses: actions/upload-artifact@v2
         with:
@@ -83,7 +82,6 @@ jobs:
           overwrite: true
           body: "Latest"
 
-        # Upload build files
       - name: Archive build files
         uses: actions/upload-artifact@v2
         with:
@@ -130,7 +128,6 @@ jobs:
           overwrite: true
           body: "Latest"
 
-        # Upload build files
       - name: Archive build files
         uses: actions/upload-artifact@v2
         with:
