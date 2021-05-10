@@ -5,11 +5,13 @@ on:
     branches:
       - master
       - WindowsBuild
+      - MacOs
 
   pull_request:
     branches:
       - master
       - WindowsBuild
+      - MacOs
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
