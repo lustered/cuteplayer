@@ -3,12 +3,10 @@ name: Windows Build
 on:
   push:
     branches:
-      - master
       - WindowsBuild
 
   pull_request:
     branches:
-      - master
       - WindowsBuild
 
   # Allows you to run this workflow manually from the Actions tab
