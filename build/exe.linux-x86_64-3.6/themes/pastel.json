@@ -1,0 +1,27 @@
+{
+  "colors": [
+    {
+      "bgcolor": "#e6d5ed",
+      "entrybg": "#c6aadf",
+      "textcolor": "#000000",
+      "buttonbg": "#ffc0cb",
+      "buttontext": "#000000",
+      "volumetroughcolor": "#c6aadf",
+      "timelinetroughcolor": "#ffc0cb",
+      "highlightedsongfg": "#c5a7d1",
+      "highlightedsongbg": "#000000",
+      "currentsongtext": "#000000",
+      "volumetext": "#000000",
+      "timelinetext": "#000000",
+      "headerbg": "#e6d5ed",
+      "headertext": "#000000",
+      "activebuttonbg": "#dea9b2",
+      "entrytext": "#000000"
+    }
+  ],
+  "icons": [
+    {
+      "headericon": "☪ "
+    }
+  ]
+}

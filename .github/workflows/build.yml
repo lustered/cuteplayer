@@ -23,7 +23,6 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
-          lfs: true
           ref: WindowsBuild
 
       - name: Restore LFS cache
@@ -32,9 +31,6 @@ jobs:
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-
-      # - name: Checkout LFS files
-      #   run: git lfs checkout
 
       - name: LFS pull
         run: git lfs pull
