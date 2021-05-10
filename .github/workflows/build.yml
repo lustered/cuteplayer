@@ -78,7 +78,8 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: build/cuteplayer-1.0.dmg
           asset_name: ${{ matrix.asset_name }}
-          tag: ${{ github.ref }}
+          # tag: ${{ github.ref }}
+          tag: "v1.0"
           overwrite: true
           body: "Latest"
 
@@ -124,7 +125,7 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: cuteplayer-installer/cuteplayer-1.0-amd64.msi
           asset_name: ${{ matrix.asset_name }}
-          tag: ${{ github.ref }}
+          tag: "v1.0"
           overwrite: true
           body: "Latest"
 
