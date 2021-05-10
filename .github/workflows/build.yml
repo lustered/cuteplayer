@@ -1,12 +1,10 @@
 name: Build
 
 on:
-  push:
+  push: [push, pull_request]
     branches:
       - master
       - WindowsBuild
-  pull_request:
-    branches: [master, WindowsBuild]
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -83,7 +81,7 @@ jobs:
   WindowsBuild:
     name: Build for Windows
     runs-on: windows-latest
-    if: github.ref == 'refs/heads/WindowsBuild'
+    # if: github.ref == 'refs/heads/WindowsBuild'
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
