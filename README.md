@@ -1,4 +1,4 @@
-[![Builds](https://github.com/lustered/cuteplayer/actions/workflows/build.yml/badge.svg)(https://github.com/lustered/cuteplayer/actions/workflows/build.yml)
+[![Builds] (https://github.com/lustered/cuteplayer/actions/workflows/build.yml/badge.svg)(https://github.com/lustered/cuteplayer/actions/workflows/build.yml)
 
 # Cuteplayer - A retro arcade music player
 
