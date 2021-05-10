@@ -1,6 +1,6 @@
 # Cuteplayer - A retro arcade aesthetic(?) music player
 
-### Simple and lightweight GUI to download and play youtube/soundcloud files in mp3 format or video
+    Simple and lightweight GUI to download and play youtube/soundcloud files in mp3 format or video
 
 ### Themes
 
@@ -20,7 +20,7 @@ And install the font from here [Arcade Classic font](https://dl.dafont.com/dl/?f
 
 ## Executable installer
 
-Simple [cuteplayer 64bit installer](https://github.com/lustered/cuteplayer/releases/download/1.0/cuteplayer-1.0-amd64.msi) from the releases 
+Simple [cuteplayer 64bit installer](https://github.com/lustered/cuteplayer/releases/download/1.0/cuteplayer-1.0-amd64.msi) from the releases
 
 ## Build form source
 
@@ -38,7 +38,7 @@ The executable will be in the build directory
 ## Known issues
 
     Hitting the play button will add 1 second every time
- 
+
 ## TODOs:
 
     Pipe stdout to hide the console when using the executable
