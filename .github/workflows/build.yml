@@ -3,66 +3,20 @@ name: Builds
 on:
   push:
     branches:
-      - master
-      - WindowsBuild
+      - MacOs
 
   pull_request:
     branches:
-      - master
-      - WindowsBuild
+      - MacOs
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
-  LinuxBuild:
-    name: Build for Linux
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master'
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          ref: master
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.6"
-          architecture: "x64"
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-
-      - name: Build App
-        run: |
-          python3 setup.py build
-
-      - name: Push to releases
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: build
-          asset_name: LinuxBuild.zip
-          # tag: ${{ github.ref }}
-          tag: "v1.0"
-          overwrite: true
-          body: "Latest"
-
-      - name: Archive build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: Linux Build Files
-          path: build
-
-      - name: Display directory
-        run: tree
-
   MacBuild:
     name: Build for MacOs
     runs-on: macos-latest
-    # if: github.ref == 'refs/heads/MacOs' # Run on push from MacOs branch
+    if: github.ref == 'refs/heads/MacOs'
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -102,69 +56,3 @@ jobs:
 
       - name: Display directory
         run: ls
-
-  WindowsBuild:
-    name: Build for Windows
-    runs-on: windows-latest
-    if: github.ref == 'refs/heads/WindowsBuild'
-    steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v2
-        with:
-          ref: WindowsBuild
-
-      - name: Create LFS file list
-        run: "git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id"
-
-      - name: Restore LFS cache
-        uses: actions/cache@v2
-        id: lfs-cache
-        with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}-v1
-
-      - name: LFS pull
-        run: git lfs pull
-
-      - uses: actions/setup-python@v2
-        with:
-          python-version: "3.6"
-          architecture: "x64"
-
-      - name: Cache python3 dependencies
-        uses: actions/cache@v2
-        id: pip-cache
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-
-
-      - name: Install dependencies
-        run: |
-          python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
-
-      - name: Create Windows Installer
-        run: python3 setup.py bdist_msi
-        shell: bash
-
-      - name: Push to releases
-        uses: svenstaro/upload-release-action@v2
-        with:
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: cuteplayer-installer/cuteplayer-1.0-amd64.msi
-          asset_name: ${{ matrix.asset_name }}
-          tag: "v1.0"
-          overwrite: true
-          body: "Latest"
-
-      - name: Archive build files
-        uses: actions/upload-artifact@v2
-        with:
-          name: Windows Installer
-          path: cuteplayer-installer/cuteplayer-1.0-amd64.msi
-
-      - name: Display directory
-        run: tree
