@@ -1,4 +1,4 @@
-name: Build
+name: Builds
 
 on:
   push:
@@ -18,7 +18,7 @@ jobs:
   LinuxBuild:
     name: Build for Linux
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dummy'
+    # if: github.ref == 'refs/heads/dummy'
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -32,7 +32,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
 
       - name: Build App
@@ -66,7 +66,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
+          python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt
 
       - name: Build App
@@ -98,13 +98,13 @@ jobs:
           python-version: "3.6"
           architecture: "x64"
 
-      - name: Create Windows Installer
+      - name: Install requirements
         run: |
-          if [ "$RUNNER_OS" == "Windows" ]; then
-            python -m pip install --upgrade pip
-            python3 -m pip install -r requirements.txt
-            python3 setup.py bdist_msi
-          fi
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+
+      - name: Create Windows Installer
+        run: python3 setup.py bdist_msi
         shell: bash
 
       - name: Push to releases
