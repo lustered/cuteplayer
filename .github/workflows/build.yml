@@ -30,10 +30,20 @@ jobs:
           python-version: "3.6"
           architecture: "x64"
 
+      - name: Cache python3 dependencies
+        uses: actions/cache@v2
+        id: pip-cache
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
+          python3 -m pip install -r requirements.txt -e .
 
       - name: Build App
         run: |
@@ -62,22 +72,32 @@ jobs:
   MacBuild:
     name: Build for MacOs
     runs-on: macos-latest
-    # if: github.ref == 'refs/heads/MacOs' # Run on push from MacOs branch
+    if: github.ref == 'refs/heads/MacOs'
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
-          ref: master
+          ref: MacOs
 
       - uses: actions/setup-python@v2
         with:
           python-version: "3.6"
           architecture: "x64"
 
+      - name: Cache python3 dependencies
+        uses: actions/cache@v2
+        id: pip-cache
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
+          python3 -m pip install -r requirements.txt -e .
 
       - name: Build App
         run: |
@@ -144,7 +164,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          python3 -m pip install -r requirements.txt
+          python3 -m pip install -r requirements.txt -e .
 
       - name: Create Windows Installer
         run: python3 setup.py bdist_msi
