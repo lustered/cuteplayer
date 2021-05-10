@@ -2,7 +2,9 @@ name: Build
 
 on:
   push:
-    branches: [master, WindowsBuild]
+    branches:
+      - master
+      - WindowsBuild
   pull_request:
     branches: [master, WindowsBuild]
 
