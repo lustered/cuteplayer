@@ -3,7 +3,7 @@ name: MacOs Build
 on:
   push:
     branches:
-      - MacOs
+      # - MacOs
 
   pull_request:
     branches:
