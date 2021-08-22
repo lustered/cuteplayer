@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 import os
 import random
 from time import sleep
-import mutagen.mp3
+import mutagen.wave
 import fnmatch
 import pygame
 from pygame import mixer
@@ -225,7 +225,9 @@ class Cuteplayer(Frame):
         ############################################################
 
         ############################### Keybindings ###############################
-        self.timeline.bind("<Button-1>", lambda event: self.after_cancel(self.timelineid))
+        self.timeline.bind(
+            "<Button-1>", lambda event: self.after_cancel(self.timelineid)
+        )
         self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
         self.timeline.bind_all("t", self.nextTheme)
         self.timeline.bind_all("p", self.togglePlay)
@@ -237,7 +239,7 @@ class Cuteplayer(Frame):
         ##############################################################
 
     def togglePlay(self, event=None):
-        """ Toggle pause and play """
+        """Toggle pause and play"""
         if self.busy:
             mixer.music.unpause()
             self.setbusy(False)
@@ -264,7 +266,7 @@ class Cuteplayer(Frame):
         self.updateTable()
 
     def setbusy(self, state):
-        """ Set current state """
+        """Set current state"""
         self.busy = state
 
     def VolAdjust(self, vol):
@@ -272,7 +274,7 @@ class Cuteplayer(Frame):
         mixer.music.set_volume(self.vol)
 
     def skip(self, event=None):
-        """ Play the next song in the playlist """
+        """Play the next song in the playlist"""
         if not self.currentSong:
             return
 
@@ -329,7 +331,7 @@ class Cuteplayer(Frame):
     def updatenplay(self):
         try:
             # override sample rate for song
-            sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
+            sample_rate = mutagen.wave.WAVE(self.currentSong).info.sample_rate
 
             # set appropiate sample rate if the song selected has a different one
             if self.sample_rate != sample_rate:
@@ -364,14 +366,14 @@ class Cuteplayer(Frame):
             pass
 
     def music_settings(self):
-        """ Reset sample rate since it may vary from each song """
+        """Reset sample rate since it may vary from each song"""
         # In case we change sample rate
         mixer.quit()
         mixer.init(self.sample_rate)
         mixer.music.set_volume(self.vol)
 
     def _shuffle(self, event=None):
-        """ Shuffle all current songs in the download directory and play them """
+        """Shuffle all current songs in the download directory and play them"""
         if self.queid is not None:
             self.after_cancel(self.queid)
 
@@ -391,14 +393,14 @@ class Cuteplayer(Frame):
             self.que_song()
 
     def que_song(self):
-        """ Used to queu the next song """
+        """Used to queu the next song"""
         if int(mixer.music.get_pos()) == -1:
             self.skip()
 
         self.queid = self.after(1000, self.que_song)
 
     def songsTable(self):
-        """ Widget Treeview/table with songs """
+        """Widget Treeview/table with songs"""
 
         # Get customized style
         style = tStyle()
@@ -438,30 +440,31 @@ class Cuteplayer(Frame):
         self.vtable.bind("<ButtonRelease-1>", self.selectedItem)
 
     def setTimeline(self, _time_event):
-        """ Set the position of the song in a timeline slider """
+        """Set the position of the song in a timeline slider"""
         if mixer.music.get_busy():
             self.after_cancel(self.timelineid)
             self.crtime += mixer.music.get_pos() / 1000
 
             # Check boundry since actual play time might be off and lock the frame.
             # Usually happens when setting the slider to the end.
-            if self.timeline.get() <= mutagen.mp3.MP3(self.currentSong).info.length:
+            if self.timeline.get() <= mutagen.wave.WAVE(self.currentSong).info.length:
+                # does not work on .wav
                 mixer.music.set_pos(self.timeline.get())
             else:
-                mixer.music.set_pos(mutagen.mp3.MP3(self.currentSong).info.length - 1)
+                mixer.music.set_pos(mutagen.wave.WAVE(self.currentSong).info.length - 1)
 
             self.crtime += self.timeline.get() - self.crtime
             self.updateTimeline()
         return
 
     def updateTimeline(self):
-        """ Update the song slider """
+        """Update the song slider"""
         # Close other instances -> Otherwise the play button will spawn multiple instances
         if self.timelineid is not None:
             self.after_cancel(self.timelineid)
 
         try:
-            song = mutagen.mp3.MP3(self.currentSong)
+            song = mutagen.wave.WAVE(self.currentSong)
             self.timeline.configure(to=song.info.length)
             self.timeline.set(self.crtime)
             self.crtime += 1
@@ -475,7 +478,7 @@ class Cuteplayer(Frame):
             self.timelineid = self.after(1000, self.updateTimeline)
 
     def updateTable(self, _=None):
-        """ Refresh the song table list """
+        """Refresh the song table list"""
         self.table.delete(*self.table.get_children())
         self.vtable.delete(*self.vtable.get_children())
 
@@ -504,7 +507,7 @@ class Cuteplayer(Frame):
             table.insert("", i, text="%s" % song, values=(i + 1))
 
     def download(self, event=None):
-        """ Download the song to the path and covert to mp3 if necessary """
+        """Download the song to the path and covert to mp3 if necessary"""
         dpath = self.path + "%(title)s.%(ext)s"
         ydl_opts = {
             "format": "bestvideo[ext=mp4]+bestaudio[ext=mp4]/mp4",
