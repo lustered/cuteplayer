@@ -1,11 +1,14 @@
 import pip
 import os
+import sys
 
 PYTHON_INSTALL_DIR = os.path.dirname(os.path.dirname(os.__file__))
 os.environ["TCL_LIBRARY"] = os.path.join(PYTHON_INSTALL_DIR, "tcl8.6")
 os.environ["TK_LIBRARY"] = os.path.join(PYTHON_INSTALL_DIR, "tk8.6")
 
-pip_packages = ["mutagen", "tk", "youtube-dl", "cx_freeze"]
+# m1 pygame
+m1pygame = "git+https://github.com/nelsonlove/pygame"
+pip_packages = ["mutagen", "tk", "youtube-dl", "cx_freeze", m1pygame]
 pip.main(["install", *pip_packages])
 
 import cx_Freeze
@@ -14,7 +17,7 @@ options = {
     "packages": ["tkinter"],
     "includes": ["pip"],
     "excludes": [],
-    "include_files": ["utils", "themes"],
+    "include_files": ["utils"],
 }
 
 executables = [
