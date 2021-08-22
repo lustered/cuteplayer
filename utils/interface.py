@@ -481,7 +481,7 @@ class Cuteplayer(Frame):
 
         # list of mp3 songs in dir
         for entry in os.listdir(self.path):
-            if fnmatch.fnmatch(entry, "*.mp3") and entry not in self.mp3_songs:
+            if fnmatch.fnmatch(entry, "*.wav") and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
 
             # if fnmatch.fnmatch(entry, "*.mkv") and entry not in self.videos:
@@ -513,7 +513,7 @@ class Cuteplayer(Frame):
             "postprocessors": [
                 {
                     "key": "FFmpegExtractAudio",
-                    "preferredcodec": "mp3",
+                    "preferredcodec": "wav",
                     "preferredquality": "192",
                 }
             ],

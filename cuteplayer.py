@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 from utils.interface import *
 
 if __name__ == "__main__":
