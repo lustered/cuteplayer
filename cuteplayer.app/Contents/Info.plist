@@ -22,6 +22,12 @@
   <string>NO</string>
   <key>NSSupportsAutomaticGraphicsSwitching</key>
   <true/>
+  <key>CFBundleShortVersionString</key>
+  <string>1.0.1</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>CFBundleVersion</key>
+  <string>1.0.1</string>
   <key>CFBundleExecutable</key>
   <string>cuteplayer</string>
   <key>CFBundleIconFile</key>
