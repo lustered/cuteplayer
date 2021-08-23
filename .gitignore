@@ -4,3 +4,4 @@ __pycache__/
 using36.py
 build/
 dist/
+.DS_Store
