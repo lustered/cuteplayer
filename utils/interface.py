@@ -8,6 +8,7 @@ import pygame
 from pygame import mixer
 from tkinter import *
 from tkinter import ttk
+from tkmacosx import Button
 from subprocess import Popen
 from threading import Thread
 from subprocess import *
@@ -85,7 +86,7 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette["bgcolor"],
-            highlightthickness=3,
+            highlightthickness=0,
             activebackground=self.palette["activebuttonbg"],
             command=lambda: [mixer.quit(), self.master.destroy()],
         )
@@ -97,7 +98,7 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette["bgcolor"],
-            highlightthickness=3,
+            highlightthickness=0,
             activebackground=self.palette["activebuttonbg"],
             command=lambda: Thread(target=self.download).start(),  # Run a new thread
         )
@@ -109,7 +110,7 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette["bgcolor"],
-            highlightthickness=3,
+            highlightthickness=0,
             activebackground=self.palette["activebuttonbg"],
             command=lambda: [
                 mixer.music.unpause(),
@@ -125,7 +126,7 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette["bgcolor"],
-            highlightthickness=3,
+            highlightthickness=0,
             activebackground=self.palette["activebuttonbg"],
             command=lambda: [
                 mixer.music.pause(),
@@ -140,7 +141,7 @@ class Cuteplayer(Frame):
             bg=self.palette["buttonbg"],
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
-            highlightthickness=3,
+            highlightthickness=0,
             highlightbackground=self.palette["bgcolor"],
             activebackground=self.palette["activebuttonbg"],
             command=self._shuffle,
@@ -153,7 +154,7 @@ class Cuteplayer(Frame):
             fg=self.palette["buttontext"],
             font=("ARCADECLASSIC", 20),
             highlightbackground=self.palette["bgcolor"],
-            highlightthickness=3,
+            highlightthickness=0,
             activebackground=self.palette["activebuttonbg"],
             command=self.skip,
         )
