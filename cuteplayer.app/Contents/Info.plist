@@ -2,10 +2,29 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+  <key>CFBundleAllowMixedLocalizations</key>
+  <true/>
+  <key>CFBundleDevelopmentRegion</key>
+  <string>English</string>
+  <key>CFBundleDisplayName</key>
+  <string>cuteplayer</string>
+  <key>CFBundleGetInfoString</key>
+  <string>A lightweight and retro-aesthetic music player</string>
+  <key>CFBundleName</key>
+  <string>kitty</string>
+  <key>CFBundlePackageType</key>
+  <string>APPL</string>
+  <key>CFBundleSignature</key>
+  <string>????</string>
+  <key>LSApplicationCategoryType</key>
+  <string>public.app-category.music</string>
+  <key>NSRequiresAquaSystemAppearance</key>
+  <string>NO</string>
+  <key>NSSupportsAutomaticGraphicsSwitching</key>
+  <true/>
   <key>CFBundleExecutable</key>
   <string>cuteplayer</string>
   <key>CFBundleIconFile</key>
   <string>cato.icns</string>
 </dict>
 </plist>
-
