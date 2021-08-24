@@ -230,12 +230,14 @@ class Cuteplayer(Frame):
             "<Button-1>", lambda event: self.after_cancel(self.timelineid)
         )
         self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
-        self.timeline.bind_all("t", self.nextTheme)
-        self.timeline.bind_all("p", self.togglePlay)
-        self.timeline.bind_all("n", self.skip)
-        self.timeline.bind_all("s", self._shuffle)
-        self.timeline.bind_all("d", self.download)
-        self.timeline.bind_all("q", lambda x: [mixer.quit(), self.master.destroy()])
+
+        # General keybinds
+        self.master.bind_all("t", self.nextTheme)
+        self.master.bind_all("p", self.togglePlay)
+        self.master.bind_all("n", self.skip)
+        self.master.bind_all("s", self._shuffle)
+        self.master.bind_all("d", self.download)
+        self.master.bind_all("q", lambda x: [mixer.quit(), self.master.destroy()])
 
         ##############################################################
 
