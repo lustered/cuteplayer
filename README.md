@@ -10,13 +10,19 @@ Simple and lightweight tk GUI to download and play youtube files in mp3 format o
 
 ![pastel](https://github.com/lustered/cuteplayer/blob/master/pics/PastelVid.png) ![flame](https://github.com/lustered/cuteplayer/blob/master/pics/FlameVid.png)
 
-## Windows
+## Install
 
-#### Version without the video integration is deprecated and can be found [here](https://github.com/lustered/cuteplayer/tree/d5c8ed79a82d9102e0cb4ed105045a0696953f3f)
+#### M1 Mac Dependencies
 
-## Known issues
+    # python@3.9.6
+    git clone 'https://github.com/lustered/cuteplayer.git'
+    cd cuteplayer/
+    pip3 install -r requirements.txt
+    brew bundle install Brewfile
 
-    Hitting the play button will add 1 second every time
+## Run
+
+    python3 cuteplayer.py
 
 ## Font:
 
