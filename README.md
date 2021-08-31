@@ -6,9 +6,9 @@ Simple and lightweight tk GUI to download and play youtube files in mp3 format o
 
 ### Themes
 
-![bliss](https://github.com/lustered/cuteplayer/blob/MacOs/pics/BlissVid.png) ![rainy](https://github.com/lustered/cuteplayer/blob/MacOs/pics/RainyVid.png)
+![bliss](https://github.com/lustered/cuteplayer/blob/MacOs/pics/BlissVid.png =100x100) ![rainy](https://github.com/lustered/cuteplayer/blob/MacOs/pics/RainyVid.png =100x100)
 
-![pastel](https://github.com/lustered/cuteplayer/blob/MacOs/pics/PastelVid.png) ![flame](https://github.com/lustered/cuteplayer/blob/MacOs/pics/FlameVid.png)
+![pastel](https://github.com/lustered/cuteplayer/blob/MacOs/pics/PastelVid.png =100x100) ![flame](https://github.com/lustered/cuteplayer/blob/MacOs/pics/FlameVid.png =100x100)
 
 ## Install
 
