@@ -1,8 +1,9 @@
-mutagen==1.45.1
+mutagen
 wheel
-tk==0.1.0
-youtube-dl==2021.4.26
-pygame==1.9.6
+tk
+youtube-dl
+/* pygame==1.9.6 # <= python@3.7*/
+git+https://github.com/nelsonlove/pygame
 python-mpv==0.3.9
-cx-Freeze==6.6
+cx-Freeze
 tkmacosx==1.0.3
