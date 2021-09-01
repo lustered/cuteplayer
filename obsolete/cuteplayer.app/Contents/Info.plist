@@ -11,7 +11,7 @@
   <key>CFBundleGetInfoString</key>
   <string>A lightweight and retro-aesthetic music player</string>
   <key>CFBundleName</key>
-  <string>kitty</string>
+  <string>cuteplayer</string>
   <key>CFBundlePackageType</key>
   <string>APPL</string>
   <key>CFBundleSignature</key>
