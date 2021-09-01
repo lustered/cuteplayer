@@ -9,9 +9,16 @@ from setuptools import setup
 import glob
 
 APP = ["cuteplayer.py"]
-DATA_FILES = [("utils", glob.glob("utils"))]
+DATA_FILES = ["utils", "libmpv.dylib"]
 OPTIONS = {
-    "packages": ["mutagen", "tk", "youtube-dl", "python-mpv", "tkmacosx"],
+    "packages": [
+        "mutagen",
+        "tk",
+        "youtube_dl",
+        "mpv",
+        "tkmacosx",
+        "pygame",
+    ],
     "iconfile": "pics/cato.icns",
     "plist": {
         "CFBundleDevelopmentRegion": "English",
