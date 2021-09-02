@@ -9,7 +9,8 @@ from setuptools import setup
 import glob
 
 APP = ["cuteplayer.py"]
-DATA_FILES = ["utils", "libmpv.dylib"]
+# DATA_FILES = ["utils", "libmpv.dylib"]
+DATA_FILES = [('utils', glob.glob('utils/*')), "libmpv.dylib"]
 OPTIONS = {
     "packages": [
         "mutagen",
@@ -19,10 +20,12 @@ OPTIONS = {
         "tkmacosx",
         "pygame",
     ],
+    "excludes": ["pillow", "image"],
+    "argv_emulation": "false",
     "iconfile": "pics/cato.icns",
     "plist": {
         "CFBundleDevelopmentRegion": "English",
-        "CFBundleIdentifier": "com.cuteplayer.xxx",
+        # "CFBundleIdentifier": "com.cuteplayer.xxx",
     },
 }
 

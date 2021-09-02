@@ -44,8 +44,8 @@ class Cuteplayer(Frame):
     def __init__(self, master, _theme="pastel"):
         super().__init__(master)
         # update youtube-dl on start
-        uthread = Thread(target=lambda: os.system("pip3 install --upgrade youtube-dl"))
-        uthread.start()
+        # uthread = Thread(target=lambda: os.system("pip3 install --upgrade youtube-dl"))
+        # uthread.start()
 
         self.palette = theme(_theme)
         self.ctheme = _theme
@@ -226,10 +226,10 @@ class Cuteplayer(Frame):
         ############################################################
 
         ############################### Keybindings ###############################
-        self.timeline.bind(
-            "<Button-1>", lambda event: self.after_cancel(self.timelineid)
-        )
-        self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
+        # self.timeline.bind(
+        #     "<Button-1>", lambda event: self.after_cancel(self.timelineid)
+        # )
+        # self.timeline.bind("<ButtonRelease-1>", self.setTimeline)
 
         # General keybinds
         self.master.bind_all("t", self.nextTheme)
