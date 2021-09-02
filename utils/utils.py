@@ -3,15 +3,100 @@ import json
 import os
 import mpv
 
+palette = {
+    "bliss": [
+        {
+            "bgcolor": "#555657",
+            "entrybg": "#555657",
+            "textcolor": "#F5D1C8",
+            "buttonbg": "#F5D1C8",
+            "buttontext": "#555657",
+            "volumetroughcolor": "#F5D1C8",
+            "timelinetroughcolor": "#F5D1C8",
+            "highlightedsongfg": "#555657",
+            "highlightedsongbg": "#F5D1C8",
+            "currentsongtext": "#F5D1C8",
+            "volumetext": "#F5D1C8",
+            "timelinetext": "#F5D1C8",
+            "headerbg": "#555657",
+            "headertext": "#F5D1C8",
+            "activebuttonbg": "#dec0b8",
+            "entrytext": "#dec0b8",
+        },
+    ],
+    "rainy": [
+        {
+            "bgcolor": "#5a5c5e",
+            "entrybg": "#7b8085",
+            "textcolor": "#c5e1fa",
+            "buttonbg": "#a2ccf2",
+            "buttontext": "#5a5c5e",
+            "volumetroughcolor": "#a2ccf2",
+            "timelinetroughcolor": "#a2ccf2",
+            "highlightedsongfg": "#7b8085",
+            "highlightedsongbg": "#85a9c9",
+            "currentsongtext": "#c5e1fa",
+            "volumetext": "#c5e1fa",
+            "timelinetext": "#c5e1fa",
+            "headerbg": "#5a5c5e",
+            "headertext": "#c5e1fa",
+            "activebuttonbg": "#85a9c9",
+            "entrytext": "#5a5c5e",
+        }
+    ],
+    "pastel": [
+        {
+            "bgcolor": "#e6d5ed",
+            "entrybg": "#c6aadf",
+            "textcolor": "#000000",
+            "buttonbg": "#ffc0cb",
+            "buttontext": "#000000",
+            "volumetroughcolor": "#c6aadf",
+            "timelinetroughcolor": "#ffc0cb",
+            "highlightedsongfg": "#c5a7d1",
+            "highlightedsongbg": "#000000",
+            "currentsongtext": "#000000",
+            "volumetext": "#000000",
+            "timelinetext": "#000000",
+            "headerbg": "#e6d5ed",
+            "headertext": "#000000",
+            "activebuttonbg": "#dea9b2",
+            "entrytext": "#000000",
+        }
+    ],
+    "flame": [
+        {
+            "bgcolor": "#080707",
+            "entrybg": "#472a25",
+            "textcolor": "#c9483e",
+            "buttonbg": "#661b15",
+            "buttontext": "#000000",
+            "volumetroughcolor": "#c9483e",
+            "timelinetroughcolor": "#c9483e",
+            "highlightedsongfg": "#000000",
+            "highlightedsongbg": "#c9483e",
+            "currentsongtext": "#c9483e",
+            "volumetext": "#c9483e",
+            "timelinetext": "#c4727a",
+            "headerbg": "#000000",
+            "headertext": "#c9483e",
+            "activebuttonbg": "#9e2e35",
+            "entrytext": "#f06a5b",
+        }
+    ],
+    "icons": [{"headericon": "☪ "}],
+}
+
 
 def theme(_theme: str) -> dict:
     global globaltheme
     globaltheme = _theme
 
-    themepath = os.path.dirname(__file__) + "/themes/" + _theme + ".json"
-    with open(themepath) as f:
-        colors = json.loads(f.read())
-    return colors["colors"][0]
+    # deprecated approach without py2app
+    # themepath = os.path.join(os.getcwd(), "/utils/themes/" + _theme + ".json")
+    # with open(themepath) as f:
+    #     colors = json.loads(f.read())
+    return palette[_theme][0]
 
 
 def playVideo(path: str):
