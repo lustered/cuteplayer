@@ -525,10 +525,13 @@ class Cuteplayer(Frame):
             ],
         }
 
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
-            print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
-            ydl.download([self.entry.get()])
-            print(":" * 30 + "[ Song Downloaded ]" + (":" * 30))
+        try:
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
+                ydl.download([self.entry.get()])
+                print(":" * 30 + "[ Song Downloaded ]" + (":" * 30))
+        except Exception as e:
+            print("Error while downloading ", e)
 
         self.entry.delete(0, "end")
         self.updateTable()
