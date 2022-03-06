@@ -11,7 +11,8 @@ from tkinter import ttk
 from subprocess import Popen
 from threading import Thread
 from subprocess import *
-import youtube_dl
+# import youtube_dl
+import yt_dlp
 from .utils import theme, tStyle, playVideo
 
 
@@ -519,7 +520,7 @@ class Cuteplayer(Frame):
             ],
         }
 
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
             ydl.download([self.entry.get()])
             print(":" * 30 + "[ Song Downloaded ]" + (":" * 30))
