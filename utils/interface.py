@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 import os
 import random
 from time import sleep
-import mutagen.wave
+import mutagen.mp3
 import fnmatch
 import pygame
 from pygame import mixer
@@ -12,7 +12,8 @@ from tkmacosx import Button
 from subprocess import Popen
 from threading import Thread
 from subprocess import *
-import youtube_dl
+import yt_dlp
+# import youtube_dl
 from .utils import theme, tStyle, playVideo
 
 
@@ -334,7 +335,7 @@ class Cuteplayer(Frame):
     def updatenplay(self):
         try:
             # override sample rate for song
-            sample_rate = mutagen.wave.WAVE(self.currentSong).info.sample_rate
+            sample_rate = mutagen.mp3.MP3(self.currentSong).info.sample_rate
 
             # set appropiate sample rate if the song selected has a different one
             if self.sample_rate != sample_rate:
@@ -450,11 +451,11 @@ class Cuteplayer(Frame):
 
             # Check boundry since actual play time might be off and lock the frame.
             # Usually happens when setting the slider to the end.
-            if self.timeline.get() <= mutagen.wave.WAVE(self.currentSong).info.length:
+            if self.timeline.get() <= mutagen.mp3.MP3(self.currentSong).info.length:
                 # does not work on .wav
                 mixer.music.set_pos(self.timeline.get())
             else:
-                mixer.music.set_pos(mutagen.wave.WAVE(self.currentSong).info.length - 1)
+                mixer.music.set_pos(mutagen.mp3.MP3(self.currentSong).info.length - 1)
 
             self.crtime += self.timeline.get() - self.crtime
             self.updateTimeline()
@@ -467,7 +468,7 @@ class Cuteplayer(Frame):
             self.after_cancel(self.timelineid)
 
         try:
-            song = mutagen.wave.WAVE(self.currentSong)
+            song = mutagen.mp3.MP3(self.currentSong)
             self.timeline.configure(to=song.info.length)
             self.timeline.set(self.crtime)
             self.crtime += 1
@@ -487,7 +488,7 @@ class Cuteplayer(Frame):
 
         # list of mp3 songs in dir
         for entry in os.listdir(self.path):
-            if fnmatch.fnmatch(entry, "*.wav") and entry not in self.mp3_songs:
+            if fnmatch.fnmatch(entry, "*.mp3") and entry not in self.mp3_songs:
                 self.mp3_songs.append(entry)
 
             # if fnmatch.fnmatch(entry, "*.mkv") and entry not in self.videos:
@@ -519,14 +520,14 @@ class Cuteplayer(Frame):
             "postprocessors": [
                 {
                     "key": "FFmpegExtractAudio",
-                    "preferredcodec": "wav",
+                    "preferredcodec": "mp3",
                     "preferredquality": "192",
                 }
             ],
         }
 
         try:
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 print(":" * 30 + "[ Video Downloading ]" + (":" * 30))
                 ydl.download([self.entry.get()])
                 print(":" * 30 + "[ Song Downloaded ]" + (":" * 30))

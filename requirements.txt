@@ -1,8 +1,8 @@
 mutagen
 wheel
 tk
-youtube-dl
-git+https://github.com/nelsonlove/pygame
+yt_dlp
 python-mpv
+pygame
 cx-Freeze
 tkmacosx

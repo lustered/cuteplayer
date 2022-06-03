@@ -15,13 +15,13 @@ OPTIONS = {
     "packages": [
         "mutagen",
         "tk",
-        "youtube_dl",
+        "yt_dlp",
         "mpv",
         "tkmacosx",
         "pygame",
     ],
     "excludes": ["pillow", "image"],
-    "argv_emulation": "false",
+    "argv_emulation": "False",
     "iconfile": "pics/cato.icns",
     "plist": {
         "CFBundleDevelopmentRegion": "English",
